@@ -57,6 +57,7 @@ public partial class Building : Node3D
 	public virtual void Remove()
 	{
 		tile.IsOccupied = false;
+		world.RemoveBuilding(this);
 		QueueFree();
 	}
 

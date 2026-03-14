@@ -3,23 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
+
 [Tool]
 public partial class World : Node3D
 {
 	#region Properties and fields
 
-	public const int Size = 15;
+	public const int Size = 32;
 
 	public Tile SelectedTile { get; set; }
 	public Building SelectedBuilding { get; set; }
 
 	private Tile[,] _tiles;
 	private List<Building> _buildings = new List<Building>();
+	private List<Node3D> _entities = new List<Node3D>();
 
 	private double _waveTimer = 0.0;
 	private double _wavePeriod = 10.0;
 
-	private bool _hasWorld = false;
+	private bool _hasTiles = false;
+
+	private Node3D _tilesNode;
+	private Node3D _buildingsNode;
+	private Node3D _entitiesNode;
+
 
 	#endregion
 
@@ -29,19 +36,23 @@ public partial class World : Node3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		_tilesNode = GetNode<Node3D>("Tiles");
+		_buildingsNode = GetNode<Node3D>("Buildings");
+		_entitiesNode = GetNode<Node3D>("Entities");
+
 		InstantiateWorld();
 	}
 
 
 	private void InstantiateWorld()
 	{
-		if (_hasWorld) return;
+		if (_hasTiles) return;
 
 		InstantiateTiles();
 		GenerateSimpleWorld();
 
 		GD.Print("Instantiated world!");
-		_hasWorld = true;
+		_hasTiles = true;
 	}
 
 
@@ -59,8 +70,8 @@ public partial class World : Node3D
 				bool isOnWorldEdge = (x == 0 || y == 0 || x == Size - 1 || y == Size - 1);
 				tile.Initialize(x, y, isOnWorldEdge);
 
-				AddChild(tile);
-				tile.Owner = GetTree().EditedSceneRoot;
+				_tilesNode.AddChild(tile);
+				//tile.Owner = GetTree().EditedSceneRoot;
 				_tiles[x, y] = tile;
 			}
 		}
@@ -117,27 +128,50 @@ public partial class World : Node3D
 	public void AddBuilding(Building building)
 	{
 		_buildings.Add(building);
-		AddChild(building);
+		_buildingsNode.AddChild(building);
+	}
+
+
+	public void RemoveBuilding(Building building)
+	{
+		_buildings.Remove(building);
+		_buildingsNode.RemoveChild(building);
+		if (SelectedBuilding == building) SelectedBuilding = null;
 	}
 
 
 	public override void _Process(double deltaTime)
 	{
+		if (Engine.IsEditorHint())
+		{
+			if (!_hasTiles) InstantiateWorld();
+			return;
+		}
+
 		ProcessWater(deltaTime);
+	}
+
+
+	private void ProcessWater(double deltaTime)
+	{
+		// Set the water level in a tile to a value to simulate a wave
+		_waveTimer += deltaTime;
+		_tiles[0, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
+		//for (int y = 0; y < Size; y++) Tiles[0, y].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
+
+		// Compute the water flows and update the water levels for each tile
+		foreach (Tile tile in _tiles) tile.ComputeWaterFlows();
+		foreach (Tile tile in _tiles) tile.UpdateWaterLevel(deltaTime);
 	}
 
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
+		if (Engine.IsEditorHint()) return;
+
 		// Handle the mouse selection
 		if (Input.IsMouseButtonPressed(MouseButton.Left))
 		{
-			foreach (Tile tile in _tiles)
-			{
-				tile.IsSelected = tile.IsMouseOvered;
-				if (tile.IsSelected) SelectedTile = tile;
-			}
-
 			foreach (Building building in _buildings)
 			{
 				building.IsSelected = building.IsMouseHovered;
@@ -162,27 +196,8 @@ public partial class World : Node3D
 
 		if (SelectedBuilding != null)
 		{
-			if (Input.IsActionJustPressed("remove_building"))
-			{
-				SelectedBuilding.Remove();
-				_buildings.Remove(SelectedBuilding);
-				SelectedBuilding = null;
-			}
-
+			if (Input.IsActionJustPressed("remove_building")) SelectedBuilding.Remove();
 			if (Input.IsActionJustPressed("rotate_building")) SelectedBuilding.Rotate();
 		}
-	}
-
-
-	private void ProcessWater(double deltaTime)
-	{
-		// Set the water level in a tile to a value to simulate a wave
-		_waveTimer += deltaTime;
-		_tiles[2, 2].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
-		//for (int y = 0; y < Size; y++) Tiles[0, y].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
-
-		// Compute the water flows and update the water levels for each tile
-		foreach (Tile tile in _tiles) tile.ComputeWaterFlows();
-		foreach (Tile tile in _tiles) tile.UpdateWaterLevel(deltaTime);
 	}
 }

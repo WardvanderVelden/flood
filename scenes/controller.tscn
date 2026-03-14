@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://dvj7dls01q04v"]
+
+[ext_resource type="Script" uid="uid://cb5b4bjt1t41v" path="res://scripts/Controller.cs" id="1_60fnl"]
+[ext_resource type="Material" uid="uid://smgkpg8i6f51" path="res://materials/selection.tres" id="2_eq701"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_um401"]
+material = ExtResource("2_eq701")
+inner_radius = 0.45
+outer_radius = 0.5
+
+[node name="Controller" type="Node3D" unique_id=842932229]
+script = ExtResource("1_60fnl")
+
+[node name="Camera" type="Camera3D" parent="." unique_id=1847900971]
+projection = 1
+size = 10.0
+
+[node name="RayCast" type="RayCast3D" parent="Camera" unique_id=1689615584]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+target_position = Vector3(0, 0, -100)
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="SelectionMesh" type="MeshInstance3D" parent="." unique_id=79277254]
+mesh = SubResource("TorusMesh_um401")

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+	"Flood": {
+	  "commandName": "Executable",
+	  "executablePath": "D:\\Program Files\\Godot\\Godot_v4.6.1-stable_mono_win64.exe",
+	  "commandLineArgs": "$(ProjectDir)",
+	  "workingDirectory": "$(ProjectDir)"
+	}
+  }
+}

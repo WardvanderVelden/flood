@@ -1,12 +1,8 @@
+res://scripts/Controller.cs
+res://scripts/Camera.cs
 res://scripts/Building.cs
 res://scripts/WindPump.cs
 res://scripts/Tile.cs
 res://scripts/World.cs
-res://scripts/Camera.cs
-res://scenes/buildings/wind_pump.tscn
-res://Properties/launchSettings.json
 res://scenes/game.tscn
-res://scenes/tile.tscn
-res://scenes/world.tscn
-res://materials/water.tres
-res://materials/grass.tres
+res://scenes/controller.tscn

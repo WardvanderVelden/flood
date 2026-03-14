@@ -4,3 +4,9 @@
 
 [node name="World" type="Node3D" unique_id=380649830]
 script = ExtResource("1_nnsk1")
+
+[node name="Tiles" type="Node3D" parent="." unique_id=1485613702]
+
+[node name="Entities" type="Node3D" parent="." unique_id=1655417117]
+
+[node name="Buildings" type="Node3D" parent="." unique_id=1388098181]
