@@ -15,3 +15,4 @@ D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\refint\Flood.dll
 D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.pdb
 D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.genruntimeconfig.cache
 D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\ref\Flood.dll
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.sourcelink.json

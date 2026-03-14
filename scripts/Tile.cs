@@ -43,11 +43,20 @@ public partial class Tile : Node3D
 		}
 	}
 
-	public float Top => _groundLevel + _waterLevel;
+	public float Top
+	{
+		get
+		{
+			if (HasWater) return _groundLevel + _waterLevel;
+			return _groundLevel;
+		}
+	}
 
-	public bool HasWater => _waterLevel > 0.0f;
+	public bool HasWater => _waterLevel > 0.01f;
 
 	public bool HasGrass { get; set; } = true;
+
+	public bool IsOccupied { get; set; } = false;
 
 	private List<TileNeighbor> _neighbors;
 	public ReadOnlyCollection<TileNeighbor> Neighbors => _neighbors.AsReadOnly();
@@ -134,7 +143,7 @@ public partial class Tile : Node3D
 
 			// Set the flow based on the delta height
 			float delta = Top - other.Top;
-			neighbor.Flow = delta * 5.0f;
+			neighbor.Flow = delta * 10.0f;
 		}
 	}
 
@@ -188,7 +197,7 @@ public partial class Tile : Node3D
 		}
 
 		_grassMesh.Visible = HasGrass;
-		if (_grassMesh.Visible) _grassMesh.Position = new Vector3(0.0f, Top + 0.05f, 0.0f);
+		_grassMesh.Position = new Vector3(0.0f, Top + 0.05f, 0.0f);
 	}
 	
 	

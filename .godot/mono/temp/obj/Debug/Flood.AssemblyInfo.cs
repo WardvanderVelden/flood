@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Flood")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a08a69a1da5b094ac780e25be5de63b9e437f0c6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Flood")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Flood")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

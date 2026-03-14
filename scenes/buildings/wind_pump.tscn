@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bnrynhq1kqmuw"]
+[gd_scene format=3 uid="uid://bnrynhq1kqmuw"]
 
 [ext_resource type="Script" uid="uid://cv32qogasgeya" path="res://scripts/WindPump.cs" id="1_wdi5i"]
 
@@ -18,40 +18,56 @@ height = 0.5
 [sub_resource type="BoxMesh" id="BoxMesh_qbg1v"]
 size = Vector3(1, 0.25, 0.05)
 
-[node name="WindPump" type="Node3D"]
-script = ExtResource("1_wdi5i")
+[sub_resource type="BoxShape3D" id="BoxShape3D_wdi5i"]
+size = Vector3(1, 2.5, 1)
 
-[node name="BuildingMesh" type="MeshInstance3D" parent="."]
+[node name="WindPump" type="Node3D" unique_id=609799681 node_paths=PackedStringArray("selectionArea")]
+script = ExtResource("1_wdi5i")
+selectionArea = NodePath("SelectionArea")
+
+[node name="BuildingMesh" type="MeshInstance3D" parent="." unique_id=1299199517]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CylinderMesh_wdi5i")
 
-[node name="BuildingTopMesh" type="MeshInstance3D" parent="."]
+[node name="BuildingTopMesh" type="MeshInstance3D" parent="." unique_id=80716746]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 mesh = SubResource("SphereMesh_wdi5i")
 
-[node name="Wicks" type="Node3D" parent="."]
+[node name="Wicks" type="Node3D" parent="." unique_id=1185986142]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
 
-[node name="Axis" type="MeshInstance3D" parent="Wicks"]
+[node name="Axis" type="MeshInstance3D" parent="Wicks" unique_id=581191840]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.25)
 mesh = SubResource("CylinderMesh_r064x")
 skeleton = NodePath("../..")
 
-[node name="WickMesh1" type="MeshInstance3D" parent="Wicks"]
+[node name="WickMesh1" type="MeshInstance3D" parent="Wicks" unique_id=863249307]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.125, 0.5)
 mesh = SubResource("BoxMesh_qbg1v")
 
-[node name="WickMesh2" type="MeshInstance3D" parent="Wicks"]
+[node name="WickMesh2" type="MeshInstance3D" parent="Wicks" unique_id=1640375346]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, -0.125, 0.5)
 mesh = SubResource("BoxMesh_qbg1v")
 skeleton = NodePath("../WickMesh1")
 
-[node name="WickMesh3" type="MeshInstance3D" parent="Wicks"]
+[node name="WickMesh3" type="MeshInstance3D" parent="Wicks" unique_id=954567423]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.119, 0.55, 0.485)
 mesh = SubResource("BoxMesh_qbg1v")
 skeleton = NodePath("../WickMesh1")
 
-[node name="WickMesh4" type="MeshInstance3D" parent="Wicks"]
+[node name="WickMesh4" type="MeshInstance3D" parent="Wicks" unique_id=1260891456]
 transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0.125, -0.55, 0.5)
 mesh = SubResource("BoxMesh_qbg1v")
 skeleton = NodePath("../WickMesh1")
+
+[node name="InletPosition" type="Node3D" parent="." unique_id=862546743]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="OutletPosition" type="Node3D" parent="." unique_id=1712937573]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="SelectionArea" type="Area3D" parent="." unique_id=773958239]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SelectionArea" unique_id=1655996542]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_wdi5i")

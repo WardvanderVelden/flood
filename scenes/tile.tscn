@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cx0bfli44nase"]
+[gd_scene format=3 uid="uid://cx0bfli44nase"]
 
 [ext_resource type="Script" uid="uid://b8m55l7xqu2d5" path="res://scripts/Tile.cs" id="1_6p3j2"]
 [ext_resource type="Material" uid="uid://d3vwcaacdinbl" path="res://materials/ground.tres" id="2_gtpg2"]
@@ -22,31 +22,31 @@ size = Vector2(1, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_72f5l"]
 size = Vector3(1, 0.1, 1)
 
-[node name="Tile" type="Node3D"]
+[node name="Tile" type="Node3D" unique_id=1855587066]
 script = ExtResource("1_6p3j2")
 
-[node name="GroundMesh" type="MeshInstance3D" parent="."]
+[node name="GroundMesh" type="MeshInstance3D" parent="." unique_id=478624247]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 mesh = SubResource("BoxMesh_vtdo3")
 
-[node name="WaterMesh" type="MeshInstance3D" parent="."]
+[node name="WaterMesh" type="MeshInstance3D" parent="." unique_id=1651783130]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 mesh = SubResource("BoxMesh_baj2x")
 
-[node name="GrassMesh" type="MeshInstance3D" parent="."]
+[node name="GrassMesh" type="MeshInstance3D" parent="." unique_id=1992193447]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
 material_override = ExtResource("4_284l3")
 mesh = SubResource("BoxMesh_doujx")
 
-[node name="SelectionMesh" type="MeshInstance3D" parent="."]
+[node name="SelectionMesh" type="MeshInstance3D" parent="." unique_id=775875210]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 visible = false
 mesh = SubResource("PlaneMesh_vtdo3")
 
-[node name="SelectionArea" type="Area3D" parent="."]
+[node name="SelectionArea" type="Area3D" parent="." unique_id=567320591]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SelectionArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SelectionArea" unique_id=1129295876]
 shape = SubResource("BoxShape3D_72f5l")
 
 [connection signal="mouse_entered" from="SelectionArea" to="." method="OnMouseEntered"]
