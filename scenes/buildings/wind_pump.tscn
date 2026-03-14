@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://bnrynhq1kqmuw"]
+
+[ext_resource type="Script" uid="uid://cv32qogasgeya" path="res://scripts/WindPump.cs" id="1_wdi5i"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_wdi5i"]
+top_radius = 0.3
+bottom_radius = 0.45
+
+[sub_resource type="SphereMesh" id="SphereMesh_wdi5i"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_r064x"]
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_qbg1v"]
+size = Vector3(1, 0.25, 0.05)
+
+[node name="WindPump" type="Node3D"]
+script = ExtResource("1_wdi5i")
+
+[node name="BuildingMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CylinderMesh_wdi5i")
+
+[node name="BuildingTopMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("SphereMesh_wdi5i")
+
+[node name="Wicks" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
+
+[node name="Axis" type="MeshInstance3D" parent="Wicks"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.25)
+mesh = SubResource("CylinderMesh_r064x")
+skeleton = NodePath("../..")
+
+[node name="WickMesh1" type="MeshInstance3D" parent="Wicks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.125, 0.5)
+mesh = SubResource("BoxMesh_qbg1v")
+
+[node name="WickMesh2" type="MeshInstance3D" parent="Wicks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, -0.125, 0.5)
+mesh = SubResource("BoxMesh_qbg1v")
+skeleton = NodePath("../WickMesh1")
+
+[node name="WickMesh3" type="MeshInstance3D" parent="Wicks"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.119, 0.55, 0.485)
+mesh = SubResource("BoxMesh_qbg1v")
+skeleton = NodePath("../WickMesh1")
+
+[node name="WickMesh4" type="MeshInstance3D" parent="Wicks"]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0.125, -0.55, 0.5)
+mesh = SubResource("BoxMesh_qbg1v")
+skeleton = NodePath("../WickMesh1")

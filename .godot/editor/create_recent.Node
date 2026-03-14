@@ -1,0 +1,10 @@
+MeshInstance3D
+Node3D
+Building
+Timer
+CollisionShape3D
+Area3D
+RayCast3D
+WorldEnvironment
+DirectionalLight3D
+Camera3D

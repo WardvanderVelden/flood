@@ -1,0 +1,53 @@
+[gd_scene load_steps=11 format=3 uid="uid://cx0bfli44nase"]
+
+[ext_resource type="Script" uid="uid://b8m55l7xqu2d5" path="res://scripts/Tile.cs" id="1_6p3j2"]
+[ext_resource type="Material" uid="uid://d3vwcaacdinbl" path="res://materials/ground.tres" id="2_gtpg2"]
+[ext_resource type="Material" uid="uid://c3v4m0t2n5lub" path="res://materials/water.tres" id="3_a2bny"]
+[ext_resource type="Material" uid="uid://jvaaxcjf0uya" path="res://materials/grass.tres" id="4_284l3"]
+[ext_resource type="Material" uid="uid://smgkpg8i6f51" path="res://materials/selection.tres" id="5_j3iir"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_vtdo3"]
+material = ExtResource("2_gtpg2")
+
+[sub_resource type="BoxMesh" id="BoxMesh_baj2x"]
+material = ExtResource("3_a2bny")
+
+[sub_resource type="BoxMesh" id="BoxMesh_doujx"]
+size = Vector3(1, 0.1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_vtdo3"]
+material = ExtResource("5_j3iir")
+size = Vector2(1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_72f5l"]
+size = Vector3(1, 0.1, 1)
+
+[node name="Tile" type="Node3D"]
+script = ExtResource("1_6p3j2")
+
+[node name="GroundMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_vtdo3")
+
+[node name="WaterMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("BoxMesh_baj2x")
+
+[node name="GrassMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
+material_override = ExtResource("4_284l3")
+mesh = SubResource("BoxMesh_doujx")
+
+[node name="SelectionMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+visible = false
+mesh = SubResource("PlaneMesh_vtdo3")
+
+[node name="SelectionArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SelectionArea"]
+shape = SubResource("BoxShape3D_72f5l")
+
+[connection signal="mouse_entered" from="SelectionArea" to="." method="OnMouseEntered"]
+[connection signal="mouse_exited" from="SelectionArea" to="." method="OnMouseExited"]

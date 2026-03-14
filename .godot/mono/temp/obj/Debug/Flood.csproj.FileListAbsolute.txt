@@ -1,0 +1,17 @@
+D:\Projects\Bamimoth\flood\.godot\mono\temp\bin\Debug\Flood.deps.json
+D:\Projects\Bamimoth\flood\.godot\mono\temp\bin\Debug\Flood.runtimeconfig.json
+D:\Projects\Bamimoth\flood\.godot\mono\temp\bin\Debug\Flood.dll
+D:\Projects\Bamimoth\flood\.godot\mono\temp\bin\Debug\Flood.pdb
+D:\Projects\Bamimoth\flood\.godot\mono\temp\bin\Debug\GodotSharp.dll
+D:\Projects\Bamimoth\flood\.godot\mono\temp\bin\Debug\GodotSharpEditor.dll
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.csproj.AssemblyReference.cache
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.AssemblyInfoInputs.cache
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.AssemblyInfo.cs
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.csproj.CoreCompileInputs.cache
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.csproj.Up2Date
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.dll
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\refint\Flood.dll
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.pdb
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.genruntimeconfig.cache
+D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\ref\Flood.dll
