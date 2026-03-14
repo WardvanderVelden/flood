@@ -21,5 +21,6 @@ public partial class Ship : Node3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		Position = new Vector3(_tile.Position.X, _tile.Top, _tile.Position.Z);
 	}
 }
