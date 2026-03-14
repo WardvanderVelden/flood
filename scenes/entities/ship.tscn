@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://cyblxtx3e35mi"]
+
+[ext_resource type="Script" uid="uid://i1rj81vyx42m" path="res://scripts/Ship.cs" id="1_jjvwm"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bfe7u"]
+size = Vector3(0.8, 0.3, 0.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nqpt7"]
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pglq8"]
+material = SubResource("StandardMaterial3D_nqpt7")
+size = Vector3(0.8, 0.3, 0.6)
+
+[node name="Ship" type="Node3D" unique_id=1985841473]
+script = ExtResource("1_jjvwm")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=2070765950]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=628585419]
+shape = SubResource("BoxShape3D_bfe7u")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=261907634]
+mesh = SubResource("BoxMesh_pglq8")

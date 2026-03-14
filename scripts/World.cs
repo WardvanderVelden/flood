@@ -128,6 +128,14 @@ public partial class World : Node3D
 			windPump.Initialize(SelectedTile);
 			AddChild(windPump);
 		}
+
+		if (Input.IsActionJustReleased("construct_ship"))
+		{
+			PackedScene shipScene = GD.Load<PackedScene>("res://scenes/entities/ship.tscn");
+			Ship ship = shipScene.Instantiate<Ship>();
+			ship.Initialize(SelectedTile);
+			AddChild(ship);
+		}
 	}
 
 

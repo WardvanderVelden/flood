@@ -1,23 +1,23 @@
-[gd_scene load_steps=4 format=3 uid="uid://dl0ie77lasff6"]
+[gd_scene format=3 uid="uid://dl0ie77lasff6"]
 
 [ext_resource type="Script" uid="uid://blrmnvb3e25bi" path="res://scripts/Camera.cs" id="1_lnu2h"]
 [ext_resource type="Script" uid="uid://co7o7ivpnkf8n" path="res://scripts/World.cs" id="2_lbhrr"]
 
 [sub_resource type="Environment" id="Environment_dbls1"]
 
-[node name="Game" type="Node3D"]
+[node name="Game" type="Node3D" unique_id=1683070849]
 
-[node name="Environment" type="WorldEnvironment" parent="."]
+[node name="Environment" type="WorldEnvironment" parent="." unique_id=106887942]
 environment = SubResource("Environment_dbls1")
 
-[node name="Camera" type="Camera3D" parent="."]
+[node name="Camera" type="Camera3D" parent="." unique_id=136685478]
 transform = Transform3D(0.70710677, -0.4055798, 0.579228, 0, 0.81915206, 0.57357645, -0.70710677, -0.4055798, 0.579228, 15, 6.5, 15)
 projection = 1
 size = 10.0
 script = ExtResource("1_lnu2h")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1246010546]
 transform = Transform3D(0.9396926, -0.29619813, 0.17101005, 0, 0.49999997, 0.86602545, -0.34202012, -0.8137977, 0.46984628, 0, 10, 0)
 
-[node name="World" type="Node3D" parent="."]
+[node name="World" type="Node3D" parent="." unique_id=887479851]
 script = ExtResource("2_lbhrr")

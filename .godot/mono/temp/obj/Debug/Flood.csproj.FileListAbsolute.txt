@@ -15,3 +15,21 @@ D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\refint\Flood.dll
 D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.pdb
 D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.genruntimeconfig.cache
 D:\Projects\Bamimoth\flood\.godot\mono\temp\obj\Debug\ref\Flood.dll
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\bin\Debug\Flood.deps.json
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\bin\Debug\Flood.runtimeconfig.json
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\bin\Debug\Flood.dll
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\bin\Debug\Flood.pdb
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\bin\Debug\GodotSharp.dll
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\bin\Debug\GodotSharpEditor.dll
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.csproj.AssemblyReference.cache
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.AssemblyInfoInputs.cache
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.AssemblyInfo.cs
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.csproj.CoreCompileInputs.cache
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.sourcelink.json
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.csproj.Up2Date
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.dll
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\refint\Flood.dll
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.pdb
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\Flood.genruntimeconfig.cache
+C:\Users\Cilia Claij\Documents\Bamimoth\flood\.godot\mono\temp\obj\Debug\ref\Flood.dll
