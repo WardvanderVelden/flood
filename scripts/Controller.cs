@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
 
@@ -8,7 +9,8 @@ public partial class Controller : Node3D
 {
 	#region Properties and fields
 
-	public Node3D SelectedNode { get; set; }
+	public Interactions Interaction { get; set; } = Interactions.None;
+	public Node3D HoveredNode { get; set; }
 
 	[Export]
 	private float _cameraPitch;
@@ -54,6 +56,8 @@ public partial class Controller : Node3D
 	[Export]
 	private World _world;
 
+	private Control _interactionButtons;
+
 	#endregion
 
 
@@ -61,7 +65,11 @@ public partial class Controller : Node3D
 	{
 		_camera = GetNode<Camera3D>("Camera");
 		_rayCast = GetNode<RayCast3D>("Camera/RayCast");
+
+		_interactionButtons = GetNode<Control>("UserInterface/InteractionButtons");
+
 		_selectionMesh = GetNode<MeshInstance3D>("SelectionMesh");
+		_selectionMesh.Visible = false;
 
 		UpdateOrientation();
 	}
@@ -73,11 +81,11 @@ public partial class Controller : Node3D
 
 		ControlCamera(deltaTime);
 		PositionCamera();
-
-		HandleSelection();
 	}
 
-	 
+
+	#region Camera control
+
 	private void ControlCamera(double deltaTime)
 	{
 		// Control the focus position and the view direction using the camera controls
@@ -90,8 +98,8 @@ public partial class Controller : Node3D
 			if (Input.IsActionPressed("camera_pan_left")) _focusPosition += panStep * _focusLeft;
 			if (Input.IsActionPressed("camera_pan_right")) _focusPosition -= panStep * _focusLeft;
 
-			if (Input.IsActionJustPressed("camera_rotate_clockwise")) FocusAngle += (float)Math.PI / 4;
-			if (Input.IsActionJustPressed("camera_rotate_counter_clockwise")) FocusAngle -= (float)Math.PI / 4;
+			if (Input.IsActionJustPressed("camera_rotate_clockwise")) FocusAngle -= (float)Math.PI / 2;
+			if (Input.IsActionJustPressed("camera_rotate_counter_clockwise")) FocusAngle += (float)Math.PI / 2;
 		}
 	}
 
@@ -124,30 +132,113 @@ public partial class Controller : Node3D
 		_camera.Position = new Vector3(_focusPosition.X, 0.0f, _focusPosition.Y) - _cameraNormal * _cameraDistance;
 	}
 
+	#endregion
 
-	private void HandleSelection()
+
+	#region Interactions
+
+	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (Input.IsMouseButtonPressed(MouseButton.Left))
-		{
-			// Set the raycast origin to the mouse position
-			Vector2 mousePosition = GetViewport().GetMousePosition();
-			_rayCast.GlobalPosition = _camera.ProjectRayOrigin(mousePosition);
+		UpdateHoveredNode();
+		if (Input.IsActionJustReleased("controller_interact")) Interact();
+		if (Input.IsActionJustPressed("controller_deselect")) SetInteraction(Interactions.None);
+	}
 
-			// Check if the raycast is colliding
-			if (_rayCast.IsColliding())
+
+	private void UpdateHoveredNode()
+	{
+		// Set the hovered not to zero by default
+		HoveredNode = null;
+		_selectionMesh.Visible = false;
+		if (Interaction == Interactions.None) return;
+
+		// Set the raycast origin to the mouse position
+		Vector2 mousePosition = GetViewport().GetMousePosition();
+		_rayCast.GlobalPosition = _camera.ProjectRayOrigin(mousePosition);
+		_rayCast.ForceRaycastUpdate();
+
+		// Check if the raycast is colliding
+		if (_rayCast.IsColliding())
+		{
+			GodotObject node = _rayCast.GetCollider();
+
+			if (node is not Area3D area) return;
+			
+			if (area.Owner is Tile tile)
 			{
-				GodotObject node = _rayCast.GetCollider();
-	
-				if (node is Area3D area)
-				{
-					if (area.Owner is Tile tile)
-					{
-						SelectedNode = tile;
-						_selectionMesh.GlobalPosition = tile.GlobalPosition + new Vector3(0.0f, tile.Top + 0.1f, 0.0f);
-					}
-					if (area.Owner is Building building) SelectedNode = building;
-				}
+				HoveredNode = tile;
+				_selectionMesh.GlobalPosition = tile.GlobalPosition + new Vector3(0.0f, tile.GroundLevel, 0.0f);
+			}
+			else if (area.Owner is Building building)
+			{
+				HoveredNode = building;
+				_selectionMesh.GlobalPosition = building.GlobalPosition;
 			}
 		}
+
+		// Set the visibility of the selection mesh if the hovered node is non zero
+		_selectionMesh.Visible = (HoveredNode != null);
 	}
+
+
+	/// <summary>
+	/// Interact with the world using the selected interaction
+	/// </summary>
+	private void Interact()
+	{
+		if (HoveredNode == null) return;
+
+		switch (Interaction)
+		{
+			case Interactions.RaiseGround: ManipulateGround(0.5f); break;
+			case Interactions.LowerGround: ManipulateGround(-0.5f); break;
+			default: break;
+		}
+	}
+
+
+	/// <summary>
+	/// Set the interaction of the controller using the <see cref="Interactions"/> enum
+	/// </summary>
+	public void SetInteraction(Interactions interaction)
+	{
+		// Set the interaction
+		Interaction = interaction;
+
+		// Toggle the appropriate buttons based on the selected interaction
+		_interactionButtons.GetChildren().OfType<Button>().ToList().ForEach(button => button.ButtonPressed = false);
+		switch (interaction)
+		{
+			case Interactions.RaiseGround: _interactionButtons.GetNode<Button>("RaiseGroundButton").ButtonPressed = true; break;
+			case Interactions.LowerGround: _interactionButtons.GetNode<Button>("LowerGroundButton").ButtonPressed = true; break;
+			case Interactions.PlaceWindPump: _interactionButtons.GetNode<Button>("PlaceWindPumpButton").ButtonPressed = true; break;
+			default: break;
+		}
+	}
+
+
+	public bool ManipulateGround(float amount)
+	{
+		if (HoveredNode == null || HoveredNode is not Tile tile) return false;
+
+		if (tile.IsOccupied) return false;
+		tile.GroundLevel += amount;
+
+		return true;
+	}
+
+	#endregion
+}
+
+
+/// <summary>
+/// Interactions that the controller may have with the environment
+/// </summary>
+public enum Interactions
+{
+	None = 0,
+	Select = 1,
+	RaiseGround = 2,
+	LowerGround = 3,
+	PlaceWindPump = 4,
 }

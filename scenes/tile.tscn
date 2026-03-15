@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b8m55l7xqu2d5" path="res://scripts/Tile.cs" id="1_6p3j2"]
 [ext_resource type="Material" uid="uid://d3vwcaacdinbl" path="res://materials/ground.tres" id="2_gtpg2"]
-[ext_resource type="Material" uid="uid://c3v4m0t2n5lub" path="res://materials/water.tres" id="3_a2bny"]
+[ext_resource type="Material" uid="uid://cktqirb6p41yf" path="res://materials/water.tres" id="3_a2bny"]
 [ext_resource type="Material" uid="uid://jvaaxcjf0uya" path="res://materials/grass.tres" id="4_284l3"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_vtdo3"]

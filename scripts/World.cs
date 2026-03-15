@@ -19,7 +19,7 @@ public partial class World : Node3D
 	private List<Node3D> _entities = new List<Node3D>();
 
 	private double _waveTimer = 0.0;
-	private double _wavePeriod = 10.0;
+	private double _wavePeriod = 5.0;
 
 	private bool _hasTiles = false;
 
@@ -156,8 +156,8 @@ public partial class World : Node3D
 	{
 		// Set the water level in a tile to a value to simulate a wave
 		_waveTimer += deltaTime;
-		_tiles[0, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
-		//for (int y = 0; y < Size; y++) Tiles[0, y].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
+		//_tiles[0, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
+		for (int x = 0; x < Size; x++) _tiles[x, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.3f;
 
 		// Compute the water flows and update the water levels for each tile
 		foreach (Tile tile in _tiles) tile.ComputeWaterFlows();

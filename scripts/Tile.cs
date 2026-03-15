@@ -175,13 +175,13 @@ public partial class Tile : Node3D
 
 	private void UpdateGroundMeshes()
 	{
-		if (_groundMesh == null || _grassMesh == null) return;
+		if (_groundMesh == null || _grassMesh == null || _selectionArea == null) return;
 
 		_groundMesh.Scale = new Vector3(1.0f, _groundLevel, 1.0f);
 		_groundMesh.Position = new Vector3(0.0f, 0.5f * _groundLevel, 0.0f);
 		
-		_grassMesh.Position = new Vector3(0.0f, Top + 0.05f, 0.0f);
-		_selectionArea.Position = new Vector3(0.0f, Top, 0.0f);
+		_grassMesh.Position = new Vector3(0.0f, _groundLevel + 0.05f, 0.0f);
+		_selectionArea.Position = new Vector3(0.0f, _groundLevel, 0.0f);
 	}
 
 
