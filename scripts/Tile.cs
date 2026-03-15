@@ -14,8 +14,6 @@ public partial class Tile : Node3D
 	public bool IsMouseOvered { get; set; }
 	public bool IsSelected { get; set; }
 
-	public bool IsOnWorldEdge { get; private set; }
-
 	private float _groundLevel = 1.0f;
 	/// <summary>
 	/// Ground level [m]
@@ -119,12 +117,10 @@ public partial class Tile : Node3D
 	}
 
 
-	public void Initialize(int x, int y, bool isOnWorldEdge = false)
+	public void Initialize(int x, int y)
 	{
 		TilePosition = new Vector2I(x, y);
 		Position = new Vector3(x, 0, y);
-
-		IsOnWorldEdge = isOnWorldEdge;
 	}
 
 

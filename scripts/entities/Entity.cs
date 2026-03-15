@@ -46,7 +46,10 @@ public partial class Entity : Node3D
 		if (!HasTask) return;
 
 		if (!IsAtTask) GlobalPosition += GlobalPosition.DirectionTo(Task.Position) * MovementSpeed * (float)deltaTime;
-		else Task.Progress += deltaTime;
+		else
+		{
+			Task.Progress += deltaTime;
+		}
 	}
 
 

@@ -15,7 +15,7 @@ size = Vector3(0.1, 0.025, 0.025)
 script = ExtResource("1_60fnl")
 
 [node name="Camera" type="Camera3D" parent="." unique_id=1847900971]
-transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 0, 0, 0)
+transform = Transform3D(0.7071067, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071067, 0, 0, 0)
 projection = 1
 size = 10.0
 
@@ -31,6 +31,7 @@ spot_range = 25.0
 spot_angle = 70.0
 
 [node name="SelectionMesh" type="MeshInstance3D" parent="." unique_id=79277254]
+visible = false
 mesh = SubResource("PlaneMesh_eq701")
 
 [node name="SelectionDirectionMesh" type="MeshInstance3D" parent="SelectionMesh" unique_id=1539400003]
@@ -38,6 +39,44 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0
 mesh = SubResource("BoxMesh_eq701")
 
 [node name="UserInterface" type="CanvasLayer" parent="." unique_id=75998623]
+
+[node name="WorldStateLabels" type="Control" parent="UserInterface" unique_id=874045234]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TimeLabel" type="Label" parent="UserInterface/WorldStateLabels" unique_id=2127224432]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 55.0
+offset_bottom = 38.0
+text = "Time"
+
+[node name="TimeValue" type="Label" parent="UserInterface/WorldStateLabels" unique_id=1176139928]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 15.0
+offset_right = 110.0
+offset_bottom = 38.0
+text = "Time"
+
+[node name="WindLabel" type="Label" parent="UserInterface/WorldStateLabels" unique_id=1947484023]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 40.0
+offset_right = 55.0
+offset_bottom = 63.0
+text = "Wind"
+
+[node name="WindValue" type="Label" parent="UserInterface/WorldStateLabels" unique_id=1952542225]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 40.0
+offset_right = 110.0
+offset_bottom = 63.0
+text = "Wind"
 
 [node name="InteractionButtons" type="Control" parent="UserInterface" unique_id=356261908]
 layout_mode = 3

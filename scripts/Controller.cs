@@ -80,6 +80,10 @@ public partial class Controller : Node3D
 	{
 		if (Engine.IsEditorHint()) return;
 
+		double hours = Math.Round(_world.Time / 3600.0, 1);
+		GetNode<Label>("UserInterface/WorldStateLabels/TimeValue").Text = hours.ToString();
+		GetNode<Label>("UserInterface/WorldStateLabels/WindValue").Text = _world.Wind.ToString();
+
 		ControlCamera(deltaTime);
 		PositionCamera();
 	}

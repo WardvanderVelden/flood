@@ -10,9 +10,20 @@ public partial class World : Node3D
 	#region Properties and fields
 
 	public const int Size = 32;
+	/// <summary>
+	/// Time in the world [s]
+	/// </summary>
+	public double Time { get; private set; } = 3600 * 8;
 
-	public Tile SelectedTile { get; set; }
-	public Building SelectedBuilding { get; set; }
+	/// <summary>
+	/// Strength of the wind [m/s] (This will have a relation to the water height)
+	/// </summary>
+	public double Wind { get; private set; }
+
+	/// <summary>
+	/// Directional angle of the wind [rad]
+	/// </summary>
+	public float WindAngle { get; private set; }
 
 	public TaskManager TaskManager { get; private set; }
 
@@ -28,7 +39,6 @@ public partial class World : Node3D
 	private Node3D _tilesNode;
 	private Node3D _buildingsNode;
 	private Node3D _entitiesNode;
-
 
 	#endregion
 
@@ -69,12 +79,9 @@ public partial class World : Node3D
 			for (int x = 0; x < Size; x++)
 			{
 				Tile tile = tileScene.Instantiate<Tile>();
-
-				bool isOnWorldEdge = (x == 0 || y == 0 || x == Size - 1 || y == Size - 1);
-				tile.Initialize(x, y, isOnWorldEdge);
+				tile.Initialize(x, y);
 
 				_tilesNode.AddChild(tile);
-				//tile.Owner = GetTree().EditedSceneRoot;
 				_tiles[x, y] = tile;
 			}
 		}
@@ -139,7 +146,6 @@ public partial class World : Node3D
 	{
 		_buildings.Remove(building);
 		_buildingsNode.RemoveChild(building);
-		if (SelectedBuilding == building) SelectedBuilding = null;
 	}
 
 
@@ -151,16 +157,24 @@ public partial class World : Node3D
 			return;
 		}
 
+		Time += deltaTime * 288.0;
+
 		ProcessWater(deltaTime);
 	}
 
 
 	private void ProcessWater(double deltaTime)
 	{
-		// Set the water level in a tile to a value to simulate a wave
+		// Set the edge of the tiles to the 
 		_waveTimer += deltaTime;
-		//_tiles[0, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
-		for (int x = 0; x < Size; x++) _tiles[x, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.3f;
+		float waveHeight = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.3f;
+		for (int i = 0; i < Size; i++)
+		{
+			_tiles[i, 0].WaterLevel = waveHeight;
+			_tiles[i, Size - 1].WaterLevel = waveHeight;
+			_tiles[0, i].WaterLevel = waveHeight;
+			_tiles[0, Size - 1].WaterLevel = waveHeight;
+		}
 
 		// Compute the water flows and update the water levels for each tile
 		foreach (Tile tile in _tiles) tile.ComputeWaterFlows();

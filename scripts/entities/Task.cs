@@ -51,6 +51,7 @@ public class Task
 		set
 		{
 			_progress = value;
+			if (Building != null) Building.IsManned = true;
 			if (_progress >= Time) Finish();
 		}
 	}
@@ -129,7 +130,13 @@ public class Task
 	/// </summary>
 	public void Finish()
 	{
+		// Call the callback function
 		if (_callbackMethod != null) _callbackMethod();
+
+		// If the task is a building related task, remove the manned flag
+		if (Building != null) Building.IsManned = false;
+
+		// Remove the task from the task manager
 		_manager.RemoveTask(this);
 	}
 }
@@ -137,6 +144,7 @@ public class Task
 
 public enum Tasks
 {
+	Rest,
 	DigGround,
 	PlaceGround,
 	Man,
