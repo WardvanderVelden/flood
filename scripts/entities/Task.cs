@@ -91,7 +91,7 @@ public class Task
 		}
 	}
 
-	public delegate void CallbackMethod();
+	public delegate void CallbackMethod(Entity entity);
 	private CallbackMethod _callbackMethod;
 
 
@@ -180,7 +180,7 @@ public class Task
 	public void Complete()
 	{
 		// Call the callback function
-		if (_callbackMethod != null) _callbackMethod();
+		if (_callbackMethod != null && Executor != null) _callbackMethod(Executor);
 
 		// Abandon the task
 		Abandon();
@@ -212,4 +212,5 @@ public enum Tasks
 	DigGround,
 	PlaceGround,
 	Man,
+	Store,
 }

@@ -200,8 +200,8 @@ public partial class Controller : Node3D
 
 		switch (_interaction)
 		{
-			case Interactions.RaiseGround: ManipulateGround(0.5f); break;
-			case Interactions.LowerGround: ManipulateGround(-0.5f); break;
+			case Interactions.RaiseGround: ManipulateGround(); break;
+			case Interactions.LowerGround: ManipulateGround(true); break;
 			case Interactions.PlaceWindPump:
 				PlaceBuilding("wind_pump");
 				SetInteraction();
@@ -232,17 +232,31 @@ public partial class Controller : Node3D
 
 
 	/// <summary>
-	/// Manipulate the ground at the hovered tile by a certain delta level
+	/// Adds tasks for manipulating the ground to the world task manager
 	/// </summary>
-	/// <returns>Returns whether the manipulation has succesfully been executed</returns>
-	public bool ManipulateGround(float amount)
+	/// <returns>Returns whether the tasks were created</returns>
+	public bool ManipulateGround(bool dig = false)
 	{
 		if (_hoveredNode == null || _hoveredNode is not Tile tile) return false;
 
 		if (tile.IsOccupied) return false;
-		tile.GroundLevel += amount;
 
-		tile.HasGrass = false;
+		if (dig)
+		{
+			_world.TaskManager.AddTask(Task.CreateTileTask(tile, Tasks.DigGround, 0.25, 0, (Entity entity) => {
+					tile.GroundLevel -= 0.5f;
+					entity.Good = Goods.Ground;
+				}
+			));
+		}
+		else
+		{
+            _world.TaskManager.AddTask(Task.CreateTileTask(tile, Tasks.PlaceGround, 0.25, 0, (Entity entity) => {
+                tile.GroundLevel += 0.5f;
+				entity.Good = Goods.Nothing;
+            }
+            ));
+        }
 
 		return true;
 	}

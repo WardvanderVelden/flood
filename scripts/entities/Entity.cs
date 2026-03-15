@@ -7,13 +7,20 @@ using Godot;
 [GlobalClass]
 public partial class Entity : Node3D
 {
-	/// <summary>
-	/// Movement speed [m/s]
-	/// </summary>
-	public float MovementSpeed { get; set; }
+    #region Properties and fields
+
+    /// <summary>
+    /// Movement speed [m/s]
+    /// </summary>
+    public float MovementSpeed { get; set; }
 
 	/// <summary>
-	/// Amount of work that the entity has [s]
+	/// Good that is carried by the entity
+	/// </summary>
+	public Goods Good { get; set; } = Goods.Nothing;
+
+	/// <summary>
+	/// Amount of work that the entity can still provide [s]
 	/// </summary>
 	public double Work { get; set; }
 
@@ -39,14 +46,15 @@ public partial class Entity : Node3D
 		}
 	}
 
-	protected double restTime = 1.0;
+	protected double restTime = 2.0;
 	protected Vector3 restPosition;
 
 	[Export]
 	private World _world;
 
+	#endregion
 
-    public override void _Ready()
+	public override void _Ready()
     {
 		restPosition = Position;
     }
