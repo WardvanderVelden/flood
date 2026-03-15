@@ -35,20 +35,26 @@ public class TaskManager
 		if (task == null) return false;
 
 		// Assign the task to the entity
-		entity.AssignTask(task);
+		task.AssignTo(entity);
 		return true;
 	}
 
 
+	/// <summary>
+	/// Add a task to the task manager
+	/// </summary>
 	public bool AddTask(Task task)
 	{
-		task.SetManager(this);
 		_tasks.Add(task);
+		task.Manager = this;
 
 		return true;
 	}
 
 
+	/// <summary>
+	/// Remove a task from the task manager
+	/// </summary>
 	public bool RemoveTask(Task task)
 	{
 		return _tasks.Remove(task);

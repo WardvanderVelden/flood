@@ -20,8 +20,7 @@ public partial class WindPump : Building
 		_inletTile = world.GetTileAt(GetNode<Node3D>("InletPosition").GlobalPosition);
 		_outletTile = world.GetTileAt(GetNode<Node3D>("OutletPosition").GlobalPosition);
 
-		// TEMPORARY: Add a task to man the wind pump
-		world.TaskManager.AddTask(Task.CreateBuildingTask(this, Tasks.Man, 5.0));
+		world.TaskManager.AddTask(Task.CreateManningTask(this));
 	}
 
 

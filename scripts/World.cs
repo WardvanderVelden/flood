@@ -157,7 +157,9 @@ public partial class World : Node3D
 			return;
 		}
 
-		Time += deltaTime * 288.0;
+		double nextTime = Time + deltaTime * 288.0;
+		Time = nextTime;
+		//if (Time < 8 * 3600 && nextTime > 8 * 3600) ProcessDailyTasks();
 
 		ProcessWater(deltaTime);
 	}

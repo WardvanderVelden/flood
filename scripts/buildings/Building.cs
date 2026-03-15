@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Godot;
 
 
@@ -12,6 +14,7 @@ public partial class Building : Node3D
 
 	[Export]
 	protected Area3D selectionArea;
+
 
 	/// <summary>
 	/// Try to place a building on a tile
@@ -34,15 +37,26 @@ public partial class Building : Node3D
 	}
 
 
+	/// <summary>
+	/// Checks whether a tile can be used to place the building on
+	/// </summary>
+	/// <param name="tile">Tile to check</param>
+	/// <returns>Returns whether the building can be placed on the tile</returns>
 	protected virtual bool CanPlaceOnTile(Tile tile)
 	{
 		return !tile.IsOccupied;
 	}
 
 
+	/// <summary>
+	/// Initialize the building
+	/// </summary>
 	protected virtual void Initialize() { }
 
 
+	/// <summary>
+	/// Remove the building
+	/// </summary>
 	public virtual void Remove()
 	{
 		tile.IsOccupied = false;
@@ -51,8 +65,17 @@ public partial class Building : Node3D
 	}
 
 
+	/// <summary>
+	/// Rotate the building
+	/// </summary>
 	public virtual void Rotate()
 	{
 		RotateY((float)Math.PI / 2);
 	}
+
+
+	/// <summary>
+	/// Add the daily tasks that this building has
+	/// </summary>
+	public virtual void AddDailyTasks() { }
 }

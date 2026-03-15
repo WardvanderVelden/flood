@@ -8,8 +8,7 @@ using Godot;
 [GlobalClass]
 public partial class Entity : Node3D
 {
-	[Export]
-	public float MovementSpeed;
+	public float MovementSpeed { get; set; }
 
 	public Task Task { get; set; }
 
@@ -48,7 +47,8 @@ public partial class Entity : Node3D
 		if (!IsAtTask) GlobalPosition += GlobalPosition.DirectionTo(Task.Position) * MovementSpeed * (float)deltaTime;
 		else
 		{
-			Task.Progress += deltaTime;
+			if (Task.Building != null) Task.Building.IsManned = true;
+			Task.Progress += deltaTime * 288.0;
 		}
 	}
 
@@ -62,12 +62,5 @@ public partial class Entity : Node3D
 	{
 		// By default, entities cannot process tasks
 		return false;
-	}
-
-
-	public void AssignTask(Task task)
-	{
-		Task = task;
-		task.Executor = this;
 	}
 }
