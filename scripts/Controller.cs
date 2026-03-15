@@ -9,9 +9,6 @@ public partial class Controller : Node3D
 {
 	#region Properties and fields
 
-	public Interactions Interaction { get; set; } = Interactions.None;
-	public Node3D HoveredNode { get; set; }
-
 	[Export]
 	private float _cameraPitch;
 	public float CameraPitch
@@ -57,6 +54,10 @@ public partial class Controller : Node3D
 	private World _world;
 
 	private Control _interactionButtons;
+
+	private Interactions _interaction = Interactions.None;
+	private float _interactionAngle = 0.0f;
+	private Node3D _hoveredNode;
 
 	#endregion
 
@@ -141,16 +142,21 @@ public partial class Controller : Node3D
 	{
 		UpdateHoveredNode();
 		if (Input.IsActionJustReleased("controller_interact")) Interact();
-		if (Input.IsActionJustPressed("controller_deselect")) SetInteraction(Interactions.None);
+		if (Input.IsActionJustPressed("controller_rotate_interaction"))
+		{
+			_interactionAngle += (float)Math.PI / 2;
+			_selectionMesh.RotateY((float)Math.PI / 2);
+		}
+		if (Input.IsActionJustPressed("controller_deselect")) SetInteraction();
 	}
 
 
 	private void UpdateHoveredNode()
 	{
 		// Set the hovered not to zero by default
-		HoveredNode = null;
+		_hoveredNode = null;
 		_selectionMesh.Visible = false;
-		if (Interaction == Interactions.None) return;
+		if (_interaction == Interactions.None) return;
 
 		// Set the raycast origin to the mouse position
 		Vector2 mousePosition = GetViewport().GetMousePosition();
@@ -166,18 +172,18 @@ public partial class Controller : Node3D
 			
 			if (area.Owner is Tile tile)
 			{
-				HoveredNode = tile;
+				_hoveredNode = tile;
 				_selectionMesh.GlobalPosition = tile.GlobalPosition + new Vector3(0.0f, tile.GroundLevel, 0.0f);
 			}
 			else if (area.Owner is Building building)
 			{
-				HoveredNode = building;
+				_hoveredNode = building;
 				_selectionMesh.GlobalPosition = building.GlobalPosition;
 			}
 		}
 
 		// Set the visibility of the selection mesh if the hovered node is non zero
-		_selectionMesh.Visible = (HoveredNode != null);
+		_selectionMesh.Visible = (_hoveredNode != null);
 	}
 
 
@@ -186,12 +192,16 @@ public partial class Controller : Node3D
 	/// </summary>
 	private void Interact()
 	{
-		if (HoveredNode == null) return;
+		if (_hoveredNode == null) return;
 
-		switch (Interaction)
+		switch (_interaction)
 		{
 			case Interactions.RaiseGround: ManipulateGround(0.5f); break;
 			case Interactions.LowerGround: ManipulateGround(-0.5f); break;
+			case Interactions.PlaceWindPump:
+				PlaceBuilding("wind_pump");
+				SetInteraction();
+				break;
 			default: break;
 		}
 	}
@@ -200,10 +210,10 @@ public partial class Controller : Node3D
 	/// <summary>
 	/// Set the interaction of the controller using the <see cref="Interactions"/> enum
 	/// </summary>
-	public void SetInteraction(Interactions interaction)
+	public void SetInteraction(Interactions interaction = Interactions.None)
 	{
 		// Set the interaction
-		Interaction = interaction;
+		_interaction = interaction;
 
 		// Toggle the appropriate buttons based on the selected interaction
 		_interactionButtons.GetChildren().OfType<Button>().ToList().ForEach(button => button.ButtonPressed = false);
@@ -217,9 +227,13 @@ public partial class Controller : Node3D
 	}
 
 
+	/// <summary>
+	/// Manipulate the ground at the hovered tile by a certain delta level
+	/// </summary>
+	/// <returns>Returns whether the manipulation has succesfully been executed</returns>
 	public bool ManipulateGround(float amount)
 	{
-		if (HoveredNode == null || HoveredNode is not Tile tile) return false;
+		if (_hoveredNode == null || _hoveredNode is not Tile tile) return false;
 
 		if (tile.IsOccupied) return false;
 		tile.GroundLevel += amount;
@@ -227,6 +241,22 @@ public partial class Controller : Node3D
 		tile.HasGrass = false;
 
 		return true;
+	}
+
+
+	/// <summary>
+	/// Attempts to place a building of a certain scene in the world
+	/// </summary>
+	/// <returns>Returns whether the building was succesfully placed in the world</returns>
+	public bool PlaceBuilding(string buildingSceneName)
+	{
+		if (_hoveredNode is not Tile tile) return false;
+
+		PackedScene buildingScene = GD.Load<PackedScene>("res://scenes/buildings/" + buildingSceneName + ".tscn");
+		Building building = buildingScene.Instantiate<Building>();
+		building.RotateY(_interactionAngle);
+
+		return building.TryToPlace(_world, tile);
 	}
 
 	#endregion

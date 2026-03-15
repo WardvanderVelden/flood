@@ -127,17 +127,17 @@ public partial class Tile : Node3D
 	}
 
 
-    public override void _Process(double deltaTime)
-    {
+	public override void _Process(double deltaTime)
+	{
 		// Handle the grass growing logic
-        if (HasSignificantWater && HasGrass) HasGrass = false;
+		if (HasSignificantWater && HasGrass) HasGrass = false;
 
-        if (!HasSignificantWater && !HasGrass)
-        {
-            _grassTimer += deltaTime;
-            HasGrass = (_grassTimer > _grassGrowTime);
-        }
-    }
+		if (!HasSignificantWater && !HasGrass)
+		{
+			_grassTimer += deltaTime;
+			HasGrass = (_grassTimer > _grassGrowTime);
+		}
+	}
 
 
 	/// <summary>
