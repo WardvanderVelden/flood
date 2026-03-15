@@ -51,7 +51,6 @@ public partial class World : Node3D
 		InstantiateTiles();
 		GenerateSimpleWorld();
 
-		GD.Print("Instantiated world!");
 		_hasTiles = true;
 	}
 

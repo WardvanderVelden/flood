@@ -1,8 +1,0 @@
-res://scripts/Controller.cs
-res://scripts/Camera.cs
-res://scripts/Building.cs
-res://scripts/WindPump.cs
-res://scripts/Tile.cs
-res://scripts/World.cs
-res://scenes/game.tscn
-res://scenes/controller.tscn

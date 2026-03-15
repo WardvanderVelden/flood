@@ -56,7 +56,22 @@ public partial class Tile : Node3D
 	public bool HasWater => _waterLevel > 0.0f;
 	public bool HasSignificantWater => _waterLevel > 0.05f;
 
-	public bool HasGrass { get; set; } = true;
+	private bool _hasGrass = true;
+	public bool HasGrass
+	{
+		get => _hasGrass;
+		set
+		{
+			if (!value &&  _hasGrass)
+			{
+				_grassTimer = 0.0;
+				_grassMesh.Visible = false;
+			}
+			if (value && !_hasGrass) _grassMesh.Visible = true;
+
+			_hasGrass = value;
+		}
+	}
 
 	public bool IsOccupied { get; set; } = false;
 
@@ -68,7 +83,7 @@ public partial class Tile : Node3D
 
 	private MeshInstance3D _grassMesh;
 	private double _grassTimer;
-	private const double _grassGrowTime = 5.0;
+	private const double _grassGrowTime = 15.0;
 
 	private Area3D _selectionArea;
 
@@ -110,6 +125,19 @@ public partial class Tile : Node3D
 		_neighbors.Add(new TileNeighbor(tile));
 		return true;
 	}
+
+
+    public override void _Process(double deltaTime)
+    {
+		// Handle the grass growing logic
+        if (HasSignificantWater && HasGrass) HasGrass = false;
+
+        if (!HasSignificantWater && !HasGrass)
+        {
+            _grassTimer += deltaTime;
+            HasGrass = (_grassTimer > _grassGrowTime);
+        }
+    }
 
 
 	/// <summary>
@@ -155,21 +183,6 @@ public partial class Tile : Node3D
 			neighbor.Tile.WaterLevel += (float)deltaTime * neighbor.Flow;
 		}
 		UpdateWaterMesh();
-
-		// If there is water on the tile, there can be no grass
-		if (HasSignificantWater && HasGrass) 
-		{
-			_grassTimer = 0.0;
-			_grassMesh.Visible = false;
-			HasGrass = false;
-		}
-
-		if (!HasSignificantWater && !HasGrass)
-		{
-			_grassTimer += deltaTime;
-			HasGrass = (_grassTimer > _grassGrowTime);
-			if (HasGrass) _grassMesh.Visible = true;
-		}
 	}
 
 

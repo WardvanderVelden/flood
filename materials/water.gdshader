@@ -28,4 +28,5 @@ void fragment() {
   	//ALBEDO.rgb = vec3(fract(scene_depth));
 	//ALBEDO.rgb = fract(world_position).xyz;
 	ALBEDO = water_color.rgb;
+	ALPHA = 0.6;
 }

@@ -224,6 +224,8 @@ public partial class Controller : Node3D
 		if (tile.IsOccupied) return false;
 		tile.GroundLevel += amount;
 
+		tile.HasGrass = false;
+
 		return true;
 	}
 
