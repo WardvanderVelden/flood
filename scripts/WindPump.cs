@@ -3,27 +3,31 @@ using Godot;
 
 public partial class WindPump : Building
 {
-	private Tile _tile;
-
 	private Tile _inletTile;
 	private Tile _outletTile;
 
 	private Node3D _wicks;
 
-
 	public override void _Ready()
 	{
 		_wicks = GetNode<Node3D>("Wicks");
+		base._Ready();
 	}
 
-	public void Initialize(Tile tile)
+
+	protected override void Initialize()
 	{
-		_tile = tile;
+		_inletTile = world.GetTileAt(GetNode<Node3D>("InletPosition").GlobalPosition);
+		_outletTile = world.GetTileAt(GetNode<Node3D>("OutletPosition").GlobalPosition);
+	}
 
-		_inletTile = tile.Neighbors[3].Tile;
-		_outletTile = tile.Neighbors[2].Tile;
 
-		Position = new Vector3(tile.Position.X, tile.Top, tile.Position.Z);
+	public override void Rotate()
+	{
+		base.Rotate();
+
+		_inletTile = world.GetTileAt(GetNode<Node3D>("InletPosition").GlobalPosition);
+		_outletTile = world.GetTileAt(GetNode<Node3D>("OutletPosition").GlobalPosition);
 	}
 
 

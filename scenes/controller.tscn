@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://dvj7dls01q04v"]
+
+[ext_resource type="Script" uid="uid://cb5b4bjt1t41v" path="res://scripts/Controller.cs" id="1_60fnl"]
+[ext_resource type="Material" uid="uid://smgkpg8i6f51" path="res://materials/selection.tres" id="2_eq701"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_eq701"]
+material = ExtResource("2_eq701")
+size = Vector2(1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_eq701"]
+material = ExtResource("2_eq701")
+size = Vector3(0.1, 0.025, 0.025)
+
+[node name="Controller" type="Node3D" unique_id=842932229]
+script = ExtResource("1_60fnl")
+
+[node name="Camera" type="Camera3D" parent="." unique_id=1847900971]
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 0, 0, 0)
+projection = 1
+size = 10.0
+
+[node name="RayCast" type="RayCast3D" parent="Camera" unique_id=1689615584]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+target_position = Vector3(0, 0, -100)
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="SpotLight" type="SpotLight3D" parent="Camera" unique_id=1391497110]
+light_energy = 25.0
+spot_range = 25.0
+spot_angle = 70.0
+
+[node name="SelectionMesh" type="MeshInstance3D" parent="." unique_id=79277254]
+mesh = SubResource("PlaneMesh_eq701")
+
+[node name="SelectionDirectionMesh" type="MeshInstance3D" parent="SelectionMesh" unique_id=1539400003]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0.45)
+mesh = SubResource("BoxMesh_eq701")
+
+[node name="UserInterface" type="CanvasLayer" parent="." unique_id=75998623]
+
+[node name="InteractionButtons" type="Control" parent="UserInterface" unique_id=356261908]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -50.0
+offset_right = 500.0
+grow_vertical = 0
+
+[node name="RaiseGroundButton" type="Button" parent="UserInterface/InteractionButtons" unique_id=411384356]
+layout_mode = 1
+offset_left = 14.0
+offset_right = 123.0
+offset_bottom = 35.0
+toggle_mode = true
+action_mode = 0
+text = "Raise ground"
+
+[node name="LowerGroundButton" type="Button" parent="UserInterface/InteractionButtons" unique_id=1209499193]
+layout_mode = 1
+offset_left = 139.0
+offset_right = 255.0
+offset_bottom = 35.0
+toggle_mode = true
+action_mode = 0
+text = "Lower ground
+"
+
+[node name="PlaceWindPumpButton" type="Button" parent="UserInterface/InteractionButtons" unique_id=1835585247]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 271.0
+offset_top = -50.0
+offset_right = 353.0
+offset_bottom = -15.0
+grow_vertical = 0
+toggle_mode = true
+action_mode = 0
+text = "Place wind pump
+
+
+
+"
+
+[connection signal="pressed" from="UserInterface/InteractionButtons/RaiseGroundButton" to="." method="SetInteraction" binds= [2]]
+[connection signal="pressed" from="UserInterface/InteractionButtons/LowerGroundButton" to="." method="SetInteraction" binds= [3]]
+[connection signal="pressed" from="UserInterface/InteractionButtons/PlaceWindPumpButton" to="." method="SetInteraction" binds= [4]]

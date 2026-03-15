@@ -1,4 +1,9 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://c3v4m0t2n5lub"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cktqirb6p41yf"]
+
+[ext_resource type="Shader" uid="uid://dphkb88trl2oa" path="res://materials/water.gdshader" id="1_6gfwt"]
 
 [resource]
-albedo_color = Color(0.162, 0.46859992, 0.6, 0.78431374)
+render_priority = 0
+shader = ExtResource("1_6gfwt")
+shader_parameter/water_alpha = 0.70000003325
+shader_parameter/water_color = Color(0.045778334, 0.26796174, 0.5605363, 1)

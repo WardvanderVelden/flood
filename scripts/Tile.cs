@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+[Tool]
 public partial class Tile : Node3D
 {
 	#region Properties and fields
@@ -25,7 +26,7 @@ public partial class Tile : Node3D
 		set
 		{
 			_groundLevel = value;
-			UpdateMeshes();
+			UpdateGroundMeshes();
 		}
 	}
 
@@ -39,15 +40,40 @@ public partial class Tile : Node3D
 		set
 		{
 			_waterLevel = value;
-			UpdateMeshes();
+			UpdateWaterMesh();
 		}
 	}
 
-	public float Top => _groundLevel + _waterLevel;
+	public float Top
+	{
+		get
+		{
+			if (HasWater) return _groundLevel + _waterLevel;
+			return _groundLevel;
+		}
+	}
 
 	public bool HasWater => _waterLevel > 0.0f;
+	public bool HasSignificantWater => _waterLevel > 0.05f;
 
-	public bool HasGrass { get; set; } = true;
+	private bool _hasGrass = true;
+	public bool HasGrass
+	{
+		get => _hasGrass;
+		set
+		{
+			if (!value &&  _hasGrass)
+			{
+				_grassTimer = 0.0;
+				_grassMesh.Visible = false;
+			}
+			if (value && !_hasGrass) _grassMesh.Visible = true;
+
+			_hasGrass = value;
+		}
+	}
+
+	public bool IsOccupied { get; set; } = false;
 
 	private List<TileNeighbor> _neighbors;
 	public ReadOnlyCollection<TileNeighbor> Neighbors => _neighbors.AsReadOnly();
@@ -57,10 +83,11 @@ public partial class Tile : Node3D
 
 	private MeshInstance3D _grassMesh;
 	private double _grassTimer;
-	private const double _grassGrowTime = 5.0;
+	private const double _grassGrowTime = 15.0;
 
-	private MeshInstance3D _selectionMesh;
 	private Area3D _selectionArea;
+
+	private bool _hasAllMeshes = false;
 
 	#endregion
 
@@ -71,13 +98,12 @@ public partial class Tile : Node3D
 
 		_groundMesh = GetNode<MeshInstance3D>("GroundMesh");
 		_waterMesh = GetNode<MeshInstance3D>("WaterMesh");
-
 		_grassMesh = GetNode<MeshInstance3D>("GrassMesh");
 
-		_selectionMesh = GetNode<MeshInstance3D>("SelectionMesh");
 		_selectionArea = GetNode<Area3D>("SelectionArea");
 
-		UpdateMeshes();
+		UpdateGroundMeshes();
+		UpdateWaterMesh();
 	}
 
 
@@ -90,13 +116,6 @@ public partial class Tile : Node3D
 	}
 
 
-	public override void _Process(double deltaTime)
-	{
-		// Set the selection mesh to visible if the tile is selected
-		_selectionMesh.Visible = IsSelected;
-	}
-
-
 	public bool AddNeighbor(Tile tile)
 	{
 		if (_neighbors == null) return false;
@@ -105,6 +124,19 @@ public partial class Tile : Node3D
 
 		_neighbors.Add(new TileNeighbor(tile));
 		return true;
+	}
+
+
+	public override void _Process(double deltaTime)
+	{
+		// Handle the grass growing logic
+		if (HasSignificantWater && HasGrass) HasGrass = false;
+
+		if (!HasSignificantWater && !HasGrass)
+		{
+			_grassTimer += deltaTime;
+			HasGrass = (_grassTimer > _grassGrowTime);
+		}
 	}
 
 
@@ -134,7 +166,7 @@ public partial class Tile : Node3D
 
 			// Set the flow based on the delta height
 			float delta = Top - other.Top;
-			neighbor.Flow = delta * 5.0f;
+			neighbor.Flow = delta * 10.0f;
 		}
 	}
 
@@ -150,60 +182,30 @@ public partial class Tile : Node3D
 			_waterLevel -= (float)deltaTime * neighbor.Flow;
 			neighbor.Tile.WaterLevel += (float)deltaTime * neighbor.Flow;
 		}
-
-		// If there is water on the tile, there can be no grass
-		if (HasWater && HasGrass) {
-			HasGrass = false;
-			_grassTimer = 0.0;
-		}
-
-		if (!HasWater && !HasGrass)
-		{
-			_grassTimer += deltaTime;
-			HasGrass = (_grassTimer > _grassGrowTime);
-		}
-
-		// Update the meshes as the water level might have changed
-		UpdateMeshes();
+		UpdateWaterMesh();
 	}
 
 
-	#region Event handling methods
-
-	private void UpdateMeshes()
+	private void UpdateGroundMeshes()
 	{
-		// Update the selection mesh and area
-		_selectionMesh.Position = new Vector3(0.0f, Top + 0.01f, 0.0f);
-		_selectionArea.Position = new Vector3(0.0f, Top, 0.0f);
+		if (_groundMesh == null || _grassMesh == null || _selectionArea == null) return;
 
-		// Update the ground, water and grass mesh
 		_groundMesh.Scale = new Vector3(1.0f, _groundLevel, 1.0f);
 		_groundMesh.Position = new Vector3(0.0f, 0.5f * _groundLevel, 0.0f);
-
-		_waterMesh.Visible = HasWater;
-		if (_waterMesh.Visible)
-		{
-			_waterMesh.Scale = new Vector3(1.0f, _waterLevel, 1.0f);
-			_waterMesh.Position = new Vector3(0.0f, _groundLevel + 0.5f * _waterLevel, 0.0f);
-		}
-
-		_grassMesh.Visible = HasGrass;
-		if (_grassMesh.Visible) _grassMesh.Position = new Vector3(0.0f, Top + 0.05f, 0.0f);
+		
+		_grassMesh.Position = new Vector3(0.0f, _groundLevel + 0.05f, 0.0f);
+		_selectionArea.Position = new Vector3(0.0f, _groundLevel, 0.0f);
 	}
-	
-	
-	private void OnMouseEntered() 
+
+
+	private void UpdateWaterMesh()
 	{
-		IsMouseOvered = true;
+		if (_waterMesh == null) return;
+
+		_waterMesh.Visible = HasSignificantWater;
+		_waterMesh.Scale = new Vector3(1.0f, _waterLevel, 1.0f);
+		_waterMesh.Position = new Vector3(0.0f, _groundLevel + 0.5f * _waterLevel, 0.0f);
 	}
-
-
-	private void OnMouseExited()
-	{
-		IsMouseOvered = false;
-	}
-
-	#endregion
 }
 
 
