@@ -25,7 +25,7 @@ public class Task
 	{
 		get
 		{
-			if (Tile != null) return Tile.GlobalPosition;
+			if (Tile != null) return Tile.TopPosition;
 			if (Building != null) return Building.GlobalPosition;
 			return Vector3.Zero;
 		}
@@ -53,7 +53,7 @@ public class Task
 			if (Time <= 0.0) return;
 
 			_progress = value;
-			if (_progress >= Time) Finish();
+			if (_progress >= Time) Complete();
 		}
 	}
 
@@ -75,7 +75,7 @@ public class Task
 	/// <summary>
 	/// Whether the task is being executed
 	/// </summary>
-	public bool HasExecutor => Executor?.Task == this;
+	public bool IsExecuting => Executor?.Task == this;
 	
 	private TaskManager _manager;
 	/// <summary>
@@ -86,9 +86,9 @@ public class Task
 		get => _manager;
 		set
 		{
-            if (_manager != null) return;
-            _manager = value;
-        }
+			if (_manager != null) return;
+			_manager = value;
+		}
 	}
 
 	public delegate void CallbackMethod();
@@ -130,11 +130,11 @@ public class Task
 	}
 
 
-    /// <summary>
-    /// Create a building based task
-    /// </summary>
-    /// /// <param name="time">Amount of time [hr] the task taskes. If the time is zero, the task is persistant</param>
-    public static Task CreateBuildingTask(Building building, Tasks type, double time, int priority = 0, CallbackMethod callbackMethod = null)
+	/// <summary>
+	/// Create a building based task
+	/// </summary>
+	/// /// <param name="time">Amount of time [hr] the task taskes. If the time is zero, the task is persistant</param>
+	public static Task CreateBuildingTask(Building building, Tasks type, double time, int priority = 0, CallbackMethod callbackMethod = null)
 	{
 		return new Task()
 		{
@@ -167,7 +167,7 @@ public class Task
 			Task previousTask = entity.Task;
 			if (previousTask.Building != null) previousTask.Building.IsManned = false;
 			previousTask.Executor = null;
-        }
+		}
 
 		entity.Task = this;
 		Executor = entity;
@@ -175,18 +175,33 @@ public class Task
 
 
 	/// <summary>
-	/// Finish the task
+	/// Complete the task
 	/// </summary>
-	public void Finish()
+	public void Complete()
 	{
 		// Call the callback function
 		if (_callbackMethod != null) _callbackMethod();
 
-		// If the task is a building related task, remove the manned flag
-		if (Building != null) Building.IsManned = false;
+		// Abandon the task
+		Abandon();
 
-		// Remove the task from the task manager
-		_manager.RemoveTask(this);
+        // Remove the task from the task manager if it has one
+        _manager?.RemoveTask(this);
+    }
+
+
+	/// <summary>
+	/// Abandon the current task by stopping work on it by the currently assigned entity
+	/// </summary>
+	public bool Abandon()
+	{
+		if (Executor == null) return false;
+		Executor.Task = null;
+
+        // If the task is a building related task, remove the manned flag
+        if (Building != null) Building.IsManned = false;
+
+        return true;
 	}
 }
 

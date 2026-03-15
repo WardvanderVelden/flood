@@ -13,7 +13,7 @@ public class TaskManager
 	/// </summary>
 	public ReadOnlyCollection<Task> Tasks => _tasks.AsReadOnly();
 
-	private World _world;
+	private readonly World _world;
 
 
 	public TaskManager(World world)
@@ -30,9 +30,17 @@ public class TaskManager
 	/// <returns>Whether a task was succesfully served</returns>
 	public bool ServeTaskTo(Entity entity)
 	{
-		// First the first task that has no executor and can be executed with the highest priority
-		Task task = _tasks.Where(t => !t.HasExecutor && entity.CanExecuteTask(t)).OrderBy(t => t.Priority).FirstOrDefault();
-		if (task == null) return false;
+		// Compile a list of tasks that are not being executed and are executable by the entity
+		List<Task> executableTasks = _tasks.Where(t => !t.IsExecuting && entity.CanExecuteTask(t)).ToList();
+		if (executableTasks.Count == 0) return false;
+
+		// Compile a list of tasks that have the same priority and are of the highest priority in the list of executable tasks
+		int priority = executableTasks[0].Priority;
+		List<Task> samePriorityTasks = executableTasks.Where(t => t.Priority == priority).ToList();
+
+		// Sort the list of same priority tasks by there proximity to the entity
+		samePriorityTasks = samePriorityTasks.OrderBy(t => t.Position.DistanceTo(entity.GlobalPosition)).ToList();
+		Task task = samePriorityTasks[0];
 
 		// Assign the task to the entity
 		task.AssignTo(entity);
@@ -47,6 +55,9 @@ public class TaskManager
 	{
 		_tasks.Add(task);
 		task.Manager = this;
+
+		// Sort the tasks after adding a new one so this does not have to be repeated
+		_tasks = _tasks.OrderBy(t => t.Priority).ToList();
 
 		return true;
 	}

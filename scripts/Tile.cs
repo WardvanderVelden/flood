@@ -42,7 +42,7 @@ public partial class Tile : Node3D
 		}
 	}
 
-	public float Top
+	public float TopLevel
 	{
 		get
 		{
@@ -51,8 +51,20 @@ public partial class Tile : Node3D
 		}
 	}
 
+
 	/// <summary>
-	/// Whether the tile has any water is is therefore wet
+	/// Top position of the tile in world space
+	/// </summary>
+	public Vector3 TopPosition
+	{
+		get
+		{
+			return new Vector3(Position.X, TopLevel, Position.Z);
+		}
+	}
+
+	/// <summary>
+	/// Whether the tile has any water and is therefore wet
 	/// </summary>
 	public bool IsWet => _waterLevel > 0.0f;
 
@@ -62,11 +74,14 @@ public partial class Tile : Node3D
 	public bool HasWater => _waterLevel >= 0.05f;
 
 	/// <summary>
-	/// Whether the tile is waddable by land based entities
+	/// Whether the tile is wadable by land entities
 	/// </summary>
-	public bool IsWaddable => _waterLevel <= 0.25f; 
+	public bool IsWadable => _waterLevel <= 0.25f; 
 
 	private bool _hasGrass = true;
+	/// <summary>
+	/// Whether the tile has grass on it
+	/// </summary>
 	public bool HasGrass
 	{
 		get => _hasGrass;
@@ -166,14 +181,14 @@ public partial class Tile : Node3D
 			Tile other = neighbor.Tile;
 
 			// If the neighbor is higher than the water level, set the flow to zero and continue
-			if (other.Top > Top) 
+			if (other.TopLevel > TopLevel) 
 			{
 				neighbor.Flow = 0.0f;
 				continue;
 			}
 
 			// Set the flow based on the delta height
-			float delta = Top - other.Top;
+			float delta = TopLevel - other.TopLevel;
 			neighbor.Flow = delta * 10.0f;
 		}
 	}

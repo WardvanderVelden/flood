@@ -72,10 +72,4 @@ public partial class Building : Node3D
 	{
 		RotateY((float)Math.PI / 2);
 	}
-
-
-	/// <summary>
-	/// Add the daily tasks that this building has
-	/// </summary>
-	public virtual void AddDailyTasks() { }
 }

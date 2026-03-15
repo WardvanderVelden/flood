@@ -1,20 +1,36 @@
 using System;
 using Godot;
 
-
 /// <summary>
 /// Represents an entity in the game that is subject to pathfinding and can perform jobs
 /// </summary>
 [GlobalClass]
 public partial class Entity : Node3D
 {
+	/// <summary>
+	/// Movement speed [m/s]
+	/// </summary>
 	public float MovementSpeed { get; set; }
 
+	/// <summary>
+	/// Amount of work that the entity has [s]
+	/// </summary>
+	public double Work { get; set; }
+
+	/// <summary>
+	/// The active task that is assigned to the entity
+	/// </summary>
 	public Task Task { get; set; }
 
+	/// <summary>
+	/// Whether the entity has a task
+	/// </summary>
 	public bool HasTask => Task != null;
 
-	public bool IsAtTask
+	/// <summary>
+	/// Whether the entity is at the task position
+	/// </summary>
+	public bool IsAtTaskPosition
 	{
 		get
 		{
@@ -23,8 +39,17 @@ public partial class Entity : Node3D
 		}
 	}
 
+	protected double restTime = 1.0;
+	protected Vector3 restPosition;
+
 	[Export]
 	private World _world;
+
+
+    public override void _Ready()
+    {
+		restPosition = Position;
+    }
 
 
 	public override void _Process(double deltaTime)
@@ -44,11 +69,22 @@ public partial class Entity : Node3D
 		// If the entity has no task, return
 		if (!HasTask) return;
 
-		if (!IsAtTask) GlobalPosition += GlobalPosition.DirectionTo(Task.Position) * MovementSpeed * (float)deltaTime;
+        // Execute the task, keeping track of the work that was spend
+        if (Task.Type == Tasks.Rest) Work += 2.0 * deltaTime * 288;
+        else Work -= deltaTime * 288;
+
+        if (!IsAtTaskPosition) GlobalPosition += GlobalPosition.DirectionTo(Task.Position) * MovementSpeed * (float)deltaTime;
 		else
 		{
 			if (Task.Building != null) Task.Building.IsManned = true;
 			Task.Progress += deltaTime * 288.0;
+		}
+
+        // If the entity can do no more work, abandon the current task and take a rest
+        if (Work < 0.0)
+		{
+			Task.Abandon();
+			Task.CreateTileTask(_world.GetTileAt(restPosition), Tasks.Rest, restTime).AssignTo(this);
 		}
 	}
 

@@ -6,11 +6,14 @@ using Godot;
 /// </summary>
 public partial class Villager : Entity
 {
-    public override void _Ready()
-    {
-        base._Ready();
-		MovementSpeed = 2.5f;
-    }
+	public override void _Ready()
+	{
+		base._Ready();
+		MovementSpeed = 2.5f; // [m/s]
+		Work = 3600.0; // [s]
+		restTime = 1.0; // [hr]
+	}
+
 
 	public override bool CanExecuteTask(Task task)
 	{

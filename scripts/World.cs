@@ -125,17 +125,16 @@ public partial class World : Node3D
 	#endregion
 
 
-	public Tile GetTileAt(Vector3 position)
+	public Tile GetTileAt(int x, int y)
 	{
-		int x = (int)position.X;
-		int y = (int)position.Z;
-
 		if (x < 0 || y < 0 || x >= Size || y >= Size) return null;
 		return _tiles[x, y];
 	}
+	public Tile GetTileAt(Vector2 position) => GetTileAt((int)position.X, (int)position.Y);
+	public Tile GetTileAt(Vector3 position) => GetTileAt((int)position.X, (int)position.Z);
 
 
-	public void AddBuilding(Building building)
+    public void AddBuilding(Building building)
 	{
 		_buildings.Add(building);
 		_buildingsNode.AddChild(building);
@@ -165,6 +164,9 @@ public partial class World : Node3D
 	}
 
 
+	/// <summary>
+	/// Process the water in the world
+	/// </summary>
 	private void ProcessWater(double deltaTime)
 	{
 		// Set the edge of the tiles to the 
