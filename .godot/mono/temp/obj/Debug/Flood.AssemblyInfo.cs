@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Flood")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a42c0f4096df1247b60580588a16f79d32dc541")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+faf8f62e6512036beb6cc44df0c2f24c23bae787")]
 [assembly: System.Reflection.AssemblyProductAttribute("Flood")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Flood")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

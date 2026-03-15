@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://c7tcdr1x0uh2b"]
+
+[ext_resource type="Script" uid="uid://bl0fxnqjdbkn2" path="res://scenes/CharacterBody3d.cs" id="1_wudhb"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_xinmp"]
+vertices = PackedVector3Array(-9.5, 1, -9.5, -9.5, 1, 9.5, 9.5, 1, 9.5, 9.5, 1, -9.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wudhb"]
+size = Vector2(20, 20)
+center_offset = Vector3(0, 0.5, 0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fbhlh"]
+
+[node name="PathfindTest" type="Node3D" unique_id=1306188644]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1272550816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.9369335, 0)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1855500167]
+transform = Transform3D(0.7168042, -0.037704457, 0.6962544, -0.10456143, 0.9814336, 0.16079538, -0.6893902, -0.1880602, 0.6995533, 11.341361, 8.757008, 13.058212)
+
+[node name="World" type="Node3D" parent="." unique_id=666901464]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="World" unique_id=526235265]
+size = Vector3(20, 1, 20)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=77248610]
+navigation_mesh = SubResource("NavigationMesh_xinmp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D" unique_id=393658928]
+mesh = SubResource("PlaneMesh_wudhb")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=637528523]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0548832, 0)
+script = ExtResource("1_wudhb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=1725387349]
+shape = SubResource("BoxShape3D_fbhlh")

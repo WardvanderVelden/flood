@@ -12,13 +12,15 @@ albedo_color = Color(1, 0, 1, 1)
 material = SubResource("StandardMaterial3D_nqpt7")
 size = Vector3(0.8, 0.3, 0.6)
 
-[node name="Ship" type="Node3D" unique_id=1985841473]
+[node name="CharacterBody3D" type="CharacterBody3D" unique_id=2070765950]
 script = ExtResource("1_jjvwm")
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=2070765950]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=628585419]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=628585419]
 shape = SubResource("BoxShape3D_bfe7u")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=866515476]
+path_height_offset = 1.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=261907634]
 mesh = SubResource("BoxMesh_pglq8")
+skeleton = NodePath("../..")

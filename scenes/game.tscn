@@ -5,6 +5,19 @@
 
 [sub_resource type="Environment" id="Environment_dbls1"]
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_yqjtg"]
+vertices = PackedVector3Array(0.5, 2, 0.5, 0.5, 2, 14.5, 14.5, 2, 14.5, 14.5, 2, 0.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yqjtg"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_lnu2h"]
+material = SubResource("StandardMaterial3D_yqjtg")
+size = Vector2(15, 15)
+center_offset = Vector3(7.5, 1.5, 7.5)
+
 [node name="Game" type="Node3D" unique_id=1683070849]
 
 [node name="Environment" type="WorldEnvironment" parent="." unique_id=106887942]
@@ -21,3 +34,9 @@ transform = Transform3D(0.9396926, -0.29619813, 0.17101005, 0, 0.49999997, 0.866
 
 [node name="World" type="Node3D" parent="." unique_id=887479851]
 script = ExtResource("2_lbhrr")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="World" unique_id=1020760017]
+navigation_mesh = SubResource("NavigationMesh_yqjtg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/NavigationRegion3D" unique_id=522125480]
+mesh = SubResource("PlaneMesh_lnu2h")

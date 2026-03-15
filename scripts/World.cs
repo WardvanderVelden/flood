@@ -101,7 +101,7 @@ public partial class World : Node3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double deltaTime)
 	{
-		ProcessWater(deltaTime);
+		// ProcessWater(deltaTime);
 	}
 
 
@@ -129,7 +129,8 @@ public partial class World : Node3D
 			AddChild(windPump);
 		}
 
-		if (Input.IsActionJustReleased("construct_ship") & SelectedTile.HasWater)
+		// if (Input.IsActionJustReleased("construct_ship") & SelectedTile.HasWater)
+		if (Input.IsActionJustReleased("construct_ship"))
 		{
 			PackedScene shipScene = GD.Load<PackedScene>("res://scenes/entities/ship.tscn");
 			Ship ship = shipScene.Instantiate<Ship>();
