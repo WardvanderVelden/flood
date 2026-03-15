@@ -7,20 +7,18 @@
 
 [node name="Game" type="Node3D" unique_id=1606452716]
 
-[node name="Controller" parent="." unique_id=842932229 instance=ExtResource("1_yqjtg")]
+[node name="Controller" parent="." unique_id=842932229 node_paths=PackedStringArray("_world") instance=ExtResource("1_yqjtg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1, 16)
-_cameraPitch = 30.0
-_cameraDistance = 10.0
-_cameraPanSpeed = 10.0
+_cameraPitch = 40.0
+_cameraDistance = 12.0
+_cameraPanSpeed = 15.0
+_world = NodePath("../World")
 
 [node name="Environment" type="WorldEnvironment" parent="." unique_id=1027958989]
 environment = SubResource("Environment_dbls1")
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=987845817]
 transform = Transform3D(0.95385575, -0.26640162, 0.13852605, 0.09778552, 0.7117983, 0.6955438, -0.28389663, -0.6499025, 0.70500314, 0, 10, 0)
-light_energy = 3.0
-shadow_normal_bias = 5.0
-shadow_opacity = 0.6
-shadow_blur = 0.1
+light_energy = 4.0
 
 [node name="World" parent="." unique_id=380649830 instance=ExtResource("2_yqjtg")]

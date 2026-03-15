@@ -70,6 +70,8 @@ public partial class Tile : Node3D
 	private double _grassTimer;
 	private const double _grassGrowTime = 5.0;
 
+	private Area3D _selectionArea;
+
 	private bool _hasAllMeshes = false;
 
 	#endregion
@@ -82,6 +84,8 @@ public partial class Tile : Node3D
 		_groundMesh = GetNode<MeshInstance3D>("GroundMesh");
 		_waterMesh = GetNode<MeshInstance3D>("WaterMesh");
 		_grassMesh = GetNode<MeshInstance3D>("GrassMesh");
+
+		_selectionArea = GetNode<Area3D>("SelectionArea");
 
 		UpdateGroundMeshes();
 		UpdateWaterMesh();
@@ -153,15 +157,18 @@ public partial class Tile : Node3D
 		UpdateWaterMesh();
 
 		// If there is water on the tile, there can be no grass
-		if (HasSignificantWater && HasGrass) {
-			HasGrass = false;
+		if (HasSignificantWater && HasGrass) 
+		{
 			_grassTimer = 0.0;
+			_grassMesh.Visible = false;
+			HasGrass = false;
 		}
 
 		if (!HasSignificantWater && !HasGrass)
 		{
 			_grassTimer += deltaTime;
 			HasGrass = (_grassTimer > _grassGrowTime);
+			if (HasGrass) _grassMesh.Visible = true;
 		}
 	}
 
@@ -172,7 +179,9 @@ public partial class Tile : Node3D
 
 		_groundMesh.Scale = new Vector3(1.0f, _groundLevel, 1.0f);
 		_groundMesh.Position = new Vector3(0.0f, 0.5f * _groundLevel, 0.0f);
+		
 		_grassMesh.Position = new Vector3(0.0f, Top + 0.05f, 0.0f);
+		_selectionArea.Position = new Vector3(0.0f, Top, 0.0f);
 	}
 
 

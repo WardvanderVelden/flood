@@ -129,29 +129,9 @@ public partial class Controller : Node3D
 	{
 		if (Input.IsMouseButtonPressed(MouseButton.Left))
 		{
+			// Set the raycast origin to the mouse position
 			Vector2 mousePosition = GetViewport().GetMousePosition();
-
-			//PhysicsDirectSpaceState3D spaceState = _camera.GetWorld3D().DirectSpaceState;
-			//Vector3 rayStart = _camera.ProjectRayOrigin(mousePosition);
-			//Vector3 rayEnd = rayStart + _cameraNormal * 100.0f; // _camera.ProjectLocalRayNormal(mousePosition) * 100.0f;
-			//var result = spaceState.IntersectRay(PhysicsRayQueryParameters3D.Create(rayStart, rayEnd));
-
-			//if (result.Count > 0)
-			//{
-			//	GD.Print("Has result!");
-			//}
-
-			// Move the raycast to the position on the screen
-			Vector2 halfScreenSize = 0.5f * GetViewport().GetVisibleRect().Size;
-
-			_rayCast.Position = new Vector3((mousePosition.X - halfScreenSize.X) / halfScreenSize.X * _cameraDistance, -(mousePosition.Y - halfScreenSize.Y) / halfScreenSize.Y * _cameraDistance, 0.0f);
-			////_rayCast.Position = _camera.ProjectRayOrigin(mousePosition);
-
-			//GD.Print(_rayCast.Position.ToString());
-
-			////_rayCast.TargetPosition = _camera.ProjectLocalRayNormal(mousePosition) * 100.0f;
-			////_rayCast.Position = _camera.ProjectRayOrigin(mousePosition);
-			//_rayCast.ForceRaycastUpdate();
+			_rayCast.GlobalPosition = _camera.ProjectRayOrigin(mousePosition);
 
 			// Check if the raycast is colliding
 			if (_rayCast.IsColliding())
@@ -163,11 +143,9 @@ public partial class Controller : Node3D
 					if (area.Owner is Tile tile)
 					{
 						SelectedNode = tile;
-						_selectionMesh.GlobalPosition = tile.GlobalPosition + tile.Top * Vector3.Up;
+						_selectionMesh.GlobalPosition = tile.GlobalPosition + new Vector3(0.0f, tile.Top + 0.1f, 0.0f);
 					}
 					if (area.Owner is Building building) SelectedNode = building;
-
-					if (SelectedNode != null) _selectionMesh.GlobalPosition = SelectedNode.GlobalPosition;
 				}
 			}
 		}

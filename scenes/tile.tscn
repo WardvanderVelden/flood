@@ -15,7 +15,7 @@ material = ExtResource("3_a2bny")
 size = Vector3(1, 0.1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_q7utx"]
-size = Vector3(1, 2, 1)
+size = Vector3(1, 0.1, 1)
 
 [node name="Tile" type="Node3D" unique_id=1855587066]
 script = ExtResource("1_6p3j2")
@@ -25,7 +25,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 mesh = SubResource("BoxMesh_vtdo3")
 
 [node name="WaterMesh" type="MeshInstance3D" parent="." unique_id=1651783130]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0)
 visible = false
 mesh = SubResource("BoxMesh_baj2x")
 
@@ -35,9 +35,9 @@ material_override = ExtResource("4_284l3")
 mesh = SubResource("BoxMesh_doujx")
 
 [node name="SelectionArea" type="Area3D" parent="." unique_id=1564652319]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 monitoring = false
 monitorable = false
 
 [node name="SelectionAreaShape" type="CollisionShape3D" parent="SelectionArea" unique_id=580349850]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_q7utx")
