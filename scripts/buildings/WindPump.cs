@@ -19,6 +19,9 @@ public partial class WindPump : Building
 	{
 		_inletTile = world.GetTileAt(GetNode<Node3D>("InletPosition").GlobalPosition);
 		_outletTile = world.GetTileAt(GetNode<Node3D>("OutletPosition").GlobalPosition);
+
+		// TEMPORARY: Add a task to man the wind pump
+		world.TaskManager.AddTask(Task.CreateBuildingTask(this, Tasks.Man, 5.0));
 	}
 
 
@@ -33,9 +36,9 @@ public partial class WindPump : Building
 
 	public override void _Process(double deltaTime)
 	{
+		if (!IsManned) return;
 		if (_inletTile == null || _outletTile == null) return;
-		//if (_inletTile.WaterLevel < 0.1f) return;
-		if (!_inletTile.HasWater) return;
+		if (!_inletTile.IsWet) return;
 
 		_wicks.RotateZ(3.141f * (float)deltaTime);
 

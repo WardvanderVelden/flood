@@ -14,9 +14,11 @@ public partial class World : Node3D
 	public Tile SelectedTile { get; set; }
 	public Building SelectedBuilding { get; set; }
 
+	public TaskManager TaskManager { get; private set; }
+
 	private Tile[,] _tiles;
 	private List<Building> _buildings = new List<Building>();
-	private List<Node3D> _entities = new List<Node3D>();
+	private List<Entity> _entities = new List<Entity>();
 
 	private double _waveTimer = 0.0;
 	private double _wavePeriod = 5.0;
@@ -36,6 +38,8 @@ public partial class World : Node3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		TaskManager = new TaskManager(this);
+
 		_tilesNode = GetNode<Node3D>("Tiles");
 		_buildingsNode = GetNode<Node3D>("Buildings");
 		_entitiesNode = GetNode<Node3D>("Entities");
@@ -161,42 +165,5 @@ public partial class World : Node3D
 		// Compute the water flows and update the water levels for each tile
 		foreach (Tile tile in _tiles) tile.ComputeWaterFlows();
 		foreach (Tile tile in _tiles) tile.UpdateWaterLevel(deltaTime);
-	}
-
-
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		if (Engine.IsEditorHint()) return;
-
-		// Handle the mouse selection
-		if (Input.IsMouseButtonPressed(MouseButton.Left))
-		{
-			foreach (Building building in _buildings)
-			{
-				building.IsSelected = building.IsMouseHovered;
-				if (building.IsSelected) SelectedBuilding = building;
-			}
-		}
-
-		if (SelectedTile != null)
-		{
-			if (Input.IsActionJustReleased("raise_ground")) SelectedTile.GroundLevel += 0.5f;
-			if (Input.IsActionJustReleased("lower_ground")) SelectedTile.GroundLevel -= 0.5f;
-
-			if (Input.IsActionJustReleased("construct_windpump"))
-			{
-				PackedScene windPumpScene = GD.Load<PackedScene>("res://scenes/buildings/wind_pump.tscn");
-				WindPump windPump = windPumpScene.Instantiate<WindPump>();
-
-				windPump.TryToPlace(this, SelectedTile);
-				SelectedBuilding = windPump;
-			}
-		}
-
-		if (SelectedBuilding != null)
-		{
-			if (Input.IsActionJustPressed("remove_building")) SelectedBuilding.Remove();
-			if (Input.IsActionJustPressed("rotate_building")) SelectedBuilding.Rotate();
-		}
 	}
 }

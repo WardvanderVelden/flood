@@ -48,13 +48,25 @@ public partial class Tile : Node3D
 	{
 		get
 		{
-			if (HasWater) return _groundLevel + _waterLevel;
+			if (IsWet) return _groundLevel + _waterLevel;
 			return _groundLevel;
 		}
 	}
 
-	public bool HasWater => _waterLevel > 0.0f;
-	public bool HasSignificantWater => _waterLevel > 0.05f;
+	/// <summary>
+	/// Whether the tile has any water is is therefore wet
+	/// </summary>
+	public bool IsWet => _waterLevel > 0.0f;
+
+	/// <summary>
+	/// Whether the tile has a significant amount of water
+	/// </summary>
+	public bool HasWater => _waterLevel >= 0.05f;
+
+	/// <summary>
+	/// Whether the tile is waddable by land based entities
+	/// </summary>
+	public bool IsWaddable => _waterLevel <= 0.25f; 
 
 	private bool _hasGrass = true;
 	public bool HasGrass
@@ -130,9 +142,9 @@ public partial class Tile : Node3D
 	public override void _Process(double deltaTime)
 	{
 		// Handle the grass growing logic
-		if (HasSignificantWater && HasGrass) HasGrass = false;
+		if (HasWater && HasGrass) HasGrass = false;
 
-		if (!HasSignificantWater && !HasGrass)
+		if (!HasWater && !HasGrass)
 		{
 			_grassTimer += deltaTime;
 			HasGrass = (_grassTimer > _grassGrowTime);
@@ -146,7 +158,7 @@ public partial class Tile : Node3D
 	public void ComputeWaterFlows()
 	{
 		// If the tile does not have any water, set the flows to zero
-		if (!HasWater)
+		if (!IsWet)
 		{
 			foreach (TileNeighbor neighbor in _neighbors) neighbor.Flow = 0.0f;
 			return;
@@ -202,7 +214,7 @@ public partial class Tile : Node3D
 	{
 		if (_waterMesh == null) return;
 
-		_waterMesh.Visible = HasSignificantWater;
+		_waterMesh.Visible = HasWater;
 		_waterMesh.Scale = new Vector3(1.0f, _waterLevel, 1.0f);
 		_waterMesh.Position = new Vector3(0.0f, _groundLevel + 0.5f * _waterLevel, 0.0f);
 	}
