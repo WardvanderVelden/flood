@@ -3,9 +3,13 @@
 [ext_resource type="Script" uid="uid://cb5b4bjt1t41v" path="res://scripts/Controller.cs" id="1_60fnl"]
 [ext_resource type="Material" uid="uid://smgkpg8i6f51" path="res://materials/selection.tres" id="2_eq701"]
 
-[sub_resource type="PrismMesh" id="PrismMesh_eq701"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_eq701"]
 material = ExtResource("2_eq701")
-size = Vector3(1, 1, 0.05)
+size = Vector2(1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_eq701"]
+material = ExtResource("2_eq701")
+size = Vector3(0.1, 0.025, 0.025)
 
 [node name="Controller" type="Node3D" unique_id=842932229]
 script = ExtResource("1_60fnl")
@@ -27,8 +31,11 @@ spot_range = 25.0
 spot_angle = 70.0
 
 [node name="SelectionMesh" type="MeshInstance3D" parent="." unique_id=79277254]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
-mesh = SubResource("PrismMesh_eq701")
+mesh = SubResource("PlaneMesh_eq701")
+
+[node name="SelectionDirectionMesh" type="MeshInstance3D" parent="SelectionMesh" unique_id=1539400003]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0.45)
+mesh = SubResource("BoxMesh_eq701")
 
 [node name="UserInterface" type="CanvasLayer" parent="." unique_id=75998623]
 
