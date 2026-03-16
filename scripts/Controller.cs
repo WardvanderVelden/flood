@@ -57,7 +57,9 @@ public partial class Controller : Node3D
 
 	private Interactions _interaction = Interactions.None;
 	private float _interactionAngle = 0.0f;
+
 	private Node3D _hoveredNode;
+	private Tile _previousManipulatedTile;
 
 	#endregion
 
@@ -145,7 +147,11 @@ public partial class Controller : Node3D
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		UpdateHoveredNode();
+
+		bool hasGroundManipulationInteraction = _interaction == Interactions.RaiseGround || _interaction == Interactions.LowerGround;
 		if (Input.IsActionJustReleased("controller_interact")) Interact();
+		if (hasGroundManipulationInteraction && Input.IsActionPressed("controller_interact")) Interact();
+		if (hasGroundManipulationInteraction && Input.IsActionJustReleased("controller_interact")) _previousManipulatedTile = null;
 		if (Input.IsActionJustPressed("controller_rotate_interaction"))
 		{
 			_interactionAngle += (float)Math.PI / 2;
@@ -200,8 +206,8 @@ public partial class Controller : Node3D
 
 		switch (_interaction)
 		{
-			case Interactions.RaiseGround: ManipulateGround(); break;
-			case Interactions.LowerGround: ManipulateGround(true); break;
+			case Interactions.RaiseGround: ManipulateGround(true); break;
+			case Interactions.LowerGround: ManipulateGround(); break;
 			case Interactions.PlaceWindPump:
 				PlaceBuilding("wind_pump");
 				SetInteraction();
@@ -235,28 +241,16 @@ public partial class Controller : Node3D
 	/// Adds tasks for manipulating the ground to the world task manager
 	/// </summary>
 	/// <returns>Returns whether the tasks were created</returns>
-	public bool ManipulateGround(bool dig = false)
+	public bool ManipulateGround(bool raiseGround = false)
 	{
 		if (_hoveredNode == null || _hoveredNode is not Tile tile) return false;
-
 		if (tile.IsOccupied) return false;
+		if (tile == _previousManipulatedTile) return false;
 
-		if (dig)
-		{
-			_world.TaskManager.AddTask(Task.CreateTileTask(tile, Tasks.Dig, 0.25, 0, (Entity entity) => {
-					tile.GroundLevel -= 0.5f;
-					entity.Good = Goods.Ground;
-				}
-			));
-		}
-		else
-		{
-			_world.TaskManager.AddTask(Task.CreateTileTask(tile, Tasks.Raise, 0.25, 0, (Entity entity) => {
-				tile.GroundLevel += 0.5f;
-				entity.Good = Goods.Nothing;
-			}
-			));
-		}
+		if (raiseGround) tile.RaiseGround(_world.TaskManager);
+		else tile.LowerGround(_world.TaskManager);
+
+		_previousManipulatedTile = tile;
 
 		return true;
 	}

@@ -9,9 +9,13 @@ public partial class Tile : Node3D
 {
 	#region Properties and fields
 
+	/// <summary>
+	/// Position of the tile in tile coordinates
+	/// </summary>
 	public Vector2I TilePosition { get; private set; }
 
 	public bool IsMouseOvered { get; set; }
+
 	public bool IsSelected { get; set; }
 
 	private float _groundLevel = 1.0f;
@@ -24,7 +28,7 @@ public partial class Tile : Node3D
 		set
 		{
 			_groundLevel = value;
-			UpdateGroundMeshes();
+			OnChangeGroundLevel();
 		}
 	}
 
@@ -38,7 +42,7 @@ public partial class Tile : Node3D
 		set
 		{
 			_waterLevel = value;
-			UpdateWaterMesh();
+			OnChangeWaterLevel();
 		}
 	}
 
@@ -53,7 +57,6 @@ public partial class Tile : Node3D
 			return _groundLevel;
 		}
 	}
-
 
 	/// <summary>
 	/// Top position of the tile in world space
@@ -90,7 +93,7 @@ public partial class Tile : Node3D
 		get => _hasGrass;
 		set
 		{
-			if (!value &&  _hasGrass)
+			if (!value &&  _hasGrass && _grassMesh != null)
 			{
 				_grassTimer = 0.0;
 				_grassMesh.Visible = false;
@@ -101,10 +104,13 @@ public partial class Tile : Node3D
 		}
 	}
 
+	/// <summary>
+	/// Whether the tile is occupied with something
+	/// </summary>
 	public bool IsOccupied { get; set; } = false;
 
 	private List<TileNeighbor> _neighbors;
-	public ReadOnlyCollection<TileNeighbor> Neighbors => _neighbors.AsReadOnly();
+	private List<Task> _tasks;
 
 	private MeshInstance3D _groundMesh;
 	private MeshInstance3D _waterMesh;
@@ -115,13 +121,18 @@ public partial class Tile : Node3D
 
 	private Area3D _selectionArea;
 
+	private Label3D _stateLabel;
+
 	private bool _hasAllMeshes = false;
 
 	#endregion
 
 
-	public override void _Ready()
+	public void Initialize(int x, int y)
 	{
+		TilePosition = new Vector2I(x, y);
+		Position = new Vector3(x, 0, y);
+
 		_neighbors = new List<TileNeighbor>();
 
 		_groundMesh = GetNode<MeshInstance3D>("GroundMesh");
@@ -130,15 +141,12 @@ public partial class Tile : Node3D
 
 		_selectionArea = GetNode<Area3D>("SelectionArea");
 
-		UpdateGroundMeshes();
-		UpdateWaterMesh();
-	}
+		_stateLabel = GetNode<Label3D>("StateLabel");
 
+		_tasks = new List<Task>();
 
-	public void Initialize(int x, int y)
-	{
-		TilePosition = new Vector2I(x, y);
-		Position = new Vector3(x, 0, y);
+		OnChangeGroundLevel();
+		OnChangeWaterLevel();
 	}
 
 
@@ -208,11 +216,27 @@ public partial class Tile : Node3D
 			_waterLevel -= (float)deltaTime * neighbor.Flow;
 			neighbor.Tile.WaterLevel += (float)deltaTime * neighbor.Flow;
 		}
-		UpdateWaterMesh();
+		OnChangeWaterLevel();
 	}
 
 
-	private void UpdateGroundMeshes()
+	private void OnChangeTasks()
+	{
+		if (_tasks.Count == 0)
+		{
+			_stateLabel.Visible = false;
+			return;
+		}
+
+		bool isRaising = _tasks[0].Type == Tasks.Raise;
+		if (isRaising) _stateLabel.Text = "Raise x" + _tasks.Count;
+		else _stateLabel.Text = "Dig x" + _tasks.Count;
+
+		_stateLabel.Visible = true;
+	}
+
+
+	private void OnChangeGroundLevel()
 	{
 		if (_groundMesh == null || _grassMesh == null || _selectionArea == null) return;
 
@@ -221,16 +245,75 @@ public partial class Tile : Node3D
 		
 		_grassMesh.Position = new Vector3(0.0f, _groundLevel + 0.05f, 0.0f);
 		_selectionArea.Position = new Vector3(0.0f, _groundLevel, 0.0f);
+
+		_stateLabel.Position = new Vector3(0.0f, Top, 0.0f);
+
+		_tasks = _tasks.Where(t => !t.IsDone).ToList();
+		OnChangeTasks();
 	}
 
 
-	private void UpdateWaterMesh()
+	private void OnChangeWaterLevel()
 	{
 		if (_waterMesh == null) return;
 
 		_waterMesh.Visible = HasWater;
 		_waterMesh.Scale = new Vector3(1.0f, _waterLevel, 1.0f);
 		_waterMesh.Position = new Vector3(0.0f, _groundLevel + 0.5f * _waterLevel, 0.0f);
+	}
+
+
+	/// <summary>
+	/// Add a raise ground task to the tile
+	/// </summary>
+	public void RaiseGround(TaskManager manager)
+	{
+		// If there is already a dig task, remove that and return
+		Task digTask = _tasks.FirstOrDefault(t => t.Type == Tasks.Dig);
+		if (digTask != null)
+		{
+			digTask.Remove();
+			_tasks.Remove(digTask);
+			OnChangeTasks();
+			return;
+		}
+
+		// Add a raise task to the tile and the manager
+		Task task = Task.CreateTileTask(this, Tasks.Raise, 0.25, 0, (Entity entity) =>
+		{
+			GroundLevel += 0.5f;
+			entity.Good = Goods.Nothing;
+		});
+		_tasks.Add(task);
+		manager.AddTask(task);
+		OnChangeTasks();
+	}
+
+
+	/// <summary>
+	/// Add a lower ground task to the tile
+	/// </summary>
+	public void LowerGround(TaskManager manager)
+	{
+		// If there is already a raise task, remove that and return
+		Task raiseTask = _tasks.FirstOrDefault(t => t.Type == Tasks.Raise);
+		if (raiseTask != null)
+		{
+			raiseTask.Remove();
+			_tasks.Remove(raiseTask);
+			OnChangeTasks();
+			return;
+		}
+
+		// Add a dig task to the tile and the manager
+		Task task = Task.CreateTileTask(this, Tasks.Dig, 0.25, 0, (Entity entity) =>
+		{
+			GroundLevel -= 0.5f;
+			entity.Good = Goods.Ground;
+		});
+		_tasks.Add(task);
+		manager.AddTask(task);
+		OnChangeTasks();
 	}
 }
 

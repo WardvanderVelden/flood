@@ -58,6 +58,11 @@ public class Task
 	}
 
 	/// <summary>
+	/// Whether the task is done
+	/// </summary>
+	public bool IsDone { get; private set; }
+
+	/// <summary>
 	/// Percentage of work that has been performed
 	/// </summary>
 	public double Percentage
@@ -188,7 +193,9 @@ public class Task
 	/// <returns>Returns whether the task was succesfully completed</returns>
 	public bool Complete()
 	{
+		IsDone = true;
 		if (_callbackMethod != null && Executor != null) _callbackMethod(Executor);
+
 		return Remove();
 	}
 
@@ -200,9 +207,9 @@ public class Task
 	public bool Remove()
 	{
 		if (!Unassign()) return false;
-        _manager?.RemoveTask(this);
+		_manager?.RemoveTask(this);
 
-        return true;
+		return true;
 	}
 
 
@@ -212,14 +219,14 @@ public class Task
 	/// <returns>Returns whether the task was succesfully unassigned</returns>
 	public bool Unassign()
 	{
-        if (Executor == null) return false;
-        Executor.Task = null;
+		if (Executor == null) return false;
+		Executor.Task = null;
 
-        // If the task is a building related task, remove the manned flag
-        if (Building != null) Building.IsManned = false;
+		// If the task is a building related task, remove the manned flag
+		if (Building != null) Building.IsManned = false;
 
 		return true;
-    }
+	}
 }
 
 

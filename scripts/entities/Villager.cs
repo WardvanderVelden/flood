@@ -33,7 +33,7 @@ public partial class Villager : Entity
 		if (Task == null) return "No task\n" + Good.ToString();
 
 		if (Task.Percentage > 0.0) return Task.Type.ToString() + " " + Task.Percentage.ToString("F0") + "%\n" + Good.ToString();
-        return Task.Type.ToString() + "\n" + Good.ToString();
+		return Task.Type.ToString() + "\n" + Good.ToString();
 	}
 
 
