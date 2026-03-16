@@ -7,12 +7,12 @@ using Godot;
 [GlobalClass]
 public partial class Entity : Node3D
 {
-    #region Properties and fields
+	#region Properties and fields
 
-    /// <summary>
-    /// Movement speed [m/s]
-    /// </summary>
-    public float MovementSpeed { get; set; }
+	/// <summary>
+	/// Movement speed [m/s]
+	/// </summary>
+	public float MovementSpeed { get; set; }
 
 	/// <summary>
 	/// Good that is carried by the entity
@@ -55,9 +55,9 @@ public partial class Entity : Node3D
 	#endregion
 
 	public override void _Ready()
-    {
+	{
 		restPosition = Position;
-    }
+	}
 
 
 	public override void _Process(double deltaTime)
@@ -71,27 +71,25 @@ public partial class Entity : Node3D
 	/// </summary>
 	private void PerformTask(double deltaTime)
 	{
-		// If the entity does not have a task, attempt to get one served
-		if (!HasTask) _world.TaskManager.ServeTaskTo(this);
+		// If the entity does not have a task, attempt to get one served. If we cannot serve a task to the entity, return
+		if (!HasTask && !_world.TaskManager.ServeTaskTo(this)) return;
 
-		// If the entity has no task, return
-		if (!HasTask) return;
+		// Track the amount of work that can still be done
+		if (Task.Type == Tasks.Rest) Work += 2.0 * deltaTime * 288.0;
+		else Work -= deltaTime * 288.0;
 
-        // Execute the task, keeping track of the work that was spend
-        if (Task.Type == Tasks.Rest) Work += 2.0 * deltaTime * 288;
-        else Work -= deltaTime * 288;
-
-        if (!IsAtTaskPosition) GlobalPosition += GlobalPosition.DirectionTo(Task.Position) * MovementSpeed * (float)deltaTime;
+		// Execute the task
+		if (!IsAtTaskPosition) GlobalPosition += GlobalPosition.DirectionTo(Task.Position) * MovementSpeed * (float)deltaTime;
 		else
 		{
 			if (Task.Building != null) Task.Building.IsManned = true;
 			Task.Progress += deltaTime * 288.0;
 		}
 
-        // If the entity can do no more work, abandon the current task and take a rest
-        if (Work < 0.0)
+		// If the entity can do no more work, unassign the current task and take a rest
+		if (Work <= 0.0)
 		{
-			Task.Abandon();
+			Task.Unassign();
 			Task.CreateTileTask(_world.GetTileAt(restPosition), Tasks.Rest, restTime).AssignTo(this);
 		}
 	}
@@ -104,7 +102,6 @@ public partial class Entity : Node3D
 	/// <returns>Returns whether the entity can execute the specified task</returns>
 	public virtual bool CanExecuteTask(Task task)
 	{
-		// By default, entities cannot process tasks
 		return false;
 	}
 }

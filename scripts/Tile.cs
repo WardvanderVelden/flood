@@ -28,7 +28,7 @@ public partial class Tile : Node3D
 		}
 	}
 
-	private float _waterLevel = 0.0f;
+	private float _waterLevel = 0.8f;
 	/// <summary>
 	/// Water level above the ground [m]
 	/// </summary>
@@ -42,7 +42,10 @@ public partial class Tile : Node3D
 		}
 	}
 
-	public float TopLevel
+	/// <summary>
+	/// Top level of the tile [m]
+	/// </summary>
+	public float Top
 	{
 		get
 		{
@@ -59,7 +62,7 @@ public partial class Tile : Node3D
 	{
 		get
 		{
-			return new Vector3(Position.X, TopLevel, Position.Z);
+			return new Vector3(Position.X, Top, Position.Z);
 		}
 	}
 
@@ -92,7 +95,7 @@ public partial class Tile : Node3D
 				_grassTimer = 0.0;
 				_grassMesh.Visible = false;
 			}
-			if (value && !_hasGrass) _grassMesh.Visible = true;
+			if (value && !_hasGrass && _grassMesh != null) _grassMesh.Visible = true;
 
 			_hasGrass = value;
 		}
@@ -181,14 +184,14 @@ public partial class Tile : Node3D
 			Tile other = neighbor.Tile;
 
 			// If the neighbor is higher than the water level, set the flow to zero and continue
-			if (other.TopLevel > TopLevel) 
+			if (other.Top > Top) 
 			{
 				neighbor.Flow = 0.0f;
 				continue;
 			}
 
 			// Set the flow based on the delta height
-			float delta = TopLevel - other.TopLevel;
+			float delta = Top - other.Top;
 			neighbor.Flow = delta * 10.0f;
 		}
 	}

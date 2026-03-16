@@ -26,6 +26,7 @@ collide_with_areas = true
 collide_with_bodies = false
 
 [node name="SpotLight" type="SpotLight3D" parent="Camera" unique_id=1391497110]
+visible = false
 light_energy = 25.0
 spot_range = 25.0
 spot_angle = 70.0

@@ -11,13 +11,19 @@ script = ExtResource("1_nnsk1")
 [node name="Entities" type="Node3D" parent="." unique_id=1655417117]
 
 [node name="Villager" parent="Entities" unique_id=1515782382 node_paths=PackedStringArray("_world") instance=ExtResource("3_k0juu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.766975, 1, 13.869997)
-MovementSpeed = 2.5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.766975, 2.095151, 13.869997)
 _world = NodePath("../..")
 
 [node name="Villager2" parent="Entities" unique_id=1107307027 node_paths=PackedStringArray("_world") instance=ExtResource("3_k0juu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.183601, 1, 15.237807)
-MovementSpeed = 2.5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.183601, 2.095151, 15.237807)
+_world = NodePath("../..")
+
+[node name="Villager3" parent="Entities" unique_id=1720057260 node_paths=PackedStringArray("_world") instance=ExtResource("3_k0juu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.291399, 2.095151, 17.655876)
+_world = NodePath("../..")
+
+[node name="Villager4" parent="Entities" unique_id=1903634513 node_paths=PackedStringArray("_world") instance=ExtResource("3_k0juu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.654854, 2.095151, 17.144222)
 _world = NodePath("../..")
 
 [node name="Buildings" type="Node3D" parent="." unique_id=1388098181]

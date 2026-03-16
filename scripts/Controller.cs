@@ -243,7 +243,7 @@ public partial class Controller : Node3D
 
 		if (dig)
 		{
-			_world.TaskManager.AddTask(Task.CreateTileTask(tile, Tasks.DigGround, 0.25, 0, (Entity entity) => {
+			_world.TaskManager.AddTask(Task.CreateTileTask(tile, Tasks.Dig, 0.25, 0, (Entity entity) => {
 					tile.GroundLevel -= 0.5f;
 					entity.Good = Goods.Ground;
 				}
@@ -251,12 +251,12 @@ public partial class Controller : Node3D
 		}
 		else
 		{
-            _world.TaskManager.AddTask(Task.CreateTileTask(tile, Tasks.PlaceGround, 0.25, 0, (Entity entity) => {
-                tile.GroundLevel += 0.5f;
+			_world.TaskManager.AddTask(Task.CreateTileTask(tile, Tasks.Raise, 0.25, 0, (Entity entity) => {
+				tile.GroundLevel += 0.5f;
 				entity.Good = Goods.Nothing;
-            }
-            ));
-        }
+			}
+			));
+		}
 
 		return true;
 	}

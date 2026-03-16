@@ -9,11 +9,15 @@ public partial class World : Node3D
 {
 	#region Properties and fields
 
-	public const int Size = 32;
+	/// <summary>
+	/// Tile count along either side of the world
+	/// </summary>
+	public int Size { get; private set; } = 32;
+
 	/// <summary>
 	/// Time in the world [s]
 	/// </summary>
-	public double Time { get; private set; } = 3600 * 8;
+	public double Time { get; private set; } = 3600.0 * 8.0;
 
 	/// <summary>
 	/// Strength of the wind [m/s] (This will have a relation to the water height)
@@ -39,6 +43,9 @@ public partial class World : Node3D
 	private Node3D _tilesNode;
 	private Node3D _buildingsNode;
 	private Node3D _entitiesNode;
+
+	[Export]
+	private DirectionalLight3D _sun;
 
 	#endregion
 
@@ -103,22 +110,21 @@ public partial class World : Node3D
 
 	private void GenerateSimpleWorld()
 	{
-		double radius = 5;
-		double angle = 0.0;
-		double angleStep = 5.0;
+		Vector2I center = new Vector2I(Size / 2, Size / 2);
+		double radius = 5.0;
 
-		Tile centerTile = _tiles[Size / 2, Size / 2];
-		centerTile.GroundLevel = 0.5f;
-		
-		while (angle < 360.0)
+		for (int y = 0; y < Size; y++)
 		{
-			int x = Size / 2 + (int)(Math.Cos(angle) * radius);
-			int y = Size / 2 + (int)(Math.Sin(angle) * radius);
-
-			Tile tile = _tiles[x, y];
-			tile.GroundLevel = 2.0f;
-
-			angle += angleStep;
+			for (int x = 0; x < Size; x++)
+			{
+				Vector2I position = new Vector2I(x, y);
+				if (center.DistanceTo(position) < radius)
+				{
+					Tile tile = _tiles[x, y];
+					tile.GroundLevel = 2.0f;
+					tile.WaterLevel = 0.0f;
+				}
+			}
 		}
 	}
 
@@ -134,7 +140,7 @@ public partial class World : Node3D
 	public Tile GetTileAt(Vector3 position) => GetTileAt((int)position.X, (int)position.Z);
 
 
-    public void AddBuilding(Building building)
+	public void AddBuilding(Building building)
 	{
 		_buildings.Add(building);
 		_buildingsNode.AddChild(building);
@@ -156,11 +162,18 @@ public partial class World : Node3D
 			return;
 		}
 
-		double nextTime = Time + deltaTime * 288.0;
-		Time = nextTime;
-		//if (Time < 8 * 3600 && nextTime > 8 * 3600) ProcessDailyTasks();
-
+		
+		ProcessTime(deltaTime);
 		ProcessWater(deltaTime);
+	}
+
+
+	private void ProcessTime(double deltaTime)
+	{
+		Time = (Time + deltaTime * 288.0) % (3600.0 * 24.0);
+
+		double dayAngle = (Time - (4.0 * 3600.0)) / (16.0 * 3600.0) * Math.PI;
+		_sun.Rotation = new Vector3((float)-dayAngle, 52.0f / 180.0f * (float)Math.PI, 0.0f);
 	}
 
 

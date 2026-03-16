@@ -25,7 +25,7 @@ void fragment() {
 
   	// Visualize linear depth
   	//ALBEDO.rgb = vec3(fract(scene_depth));
-  	//ALBEDO.rgb = vec3(fract(scene_depth));
+  	//ALBEDO.rgb = vec3(fract(depth_diff));
 	//ALBEDO.rgb = fract(world_position).xyz;
 	ALBEDO = water_color.rgb;
 	ALPHA = 0.6;

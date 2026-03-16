@@ -9,6 +9,10 @@
 
 [node name="Game" type="Node3D" unique_id=1606452716]
 
+[node name="Environment" type="WorldEnvironment" parent="." unique_id=1027958989]
+environment = SubResource("Environment_dbls1")
+camera_attributes = SubResource("CameraAttributesPractical_yqjtg")
+
 [node name="Controller" parent="." unique_id=842932229 node_paths=PackedStringArray("_world") instance=ExtResource("1_yqjtg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1, 16)
 _cameraPitch = 40.0
@@ -16,12 +20,16 @@ _cameraDistance = 12.0
 _cameraPanSpeed = 15.0
 _world = NodePath("../World")
 
-[node name="Environment" type="WorldEnvironment" parent="." unique_id=1027958989]
-environment = SubResource("Environment_dbls1")
-camera_attributes = SubResource("CameraAttributesPractical_yqjtg")
-
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=987845817]
-transform = Transform3D(0.79705906, -0.46689478, 0.38302222, 0.13302222, 0.75440645, 0.6427876, -0.58906865, -0.46138918, 0.66341394, 0, 10, 0)
+transform = Transform3D(0.8660253, -0.08682408, 0.49240386, 0, 0.98480767, 0.17364818, -0.49999997, -0.15038371, 0.8528685, 0, 0, 0)
+light_color = Color(0.8, 0.8, 0.8, 1)
 light_energy = 4.0
+shadow_enabled = true
+shadow_bias = 1.9
+shadow_opacity = 0.8
+shadow_blur = 2.867
+directional_shadow_split_1 = 0.01
+directional_shadow_blend_splits = true
 
-[node name="World" parent="." unique_id=380649830 instance=ExtResource("2_yqjtg")]
+[node name="World" parent="." unique_id=380649830 node_paths=PackedStringArray("_sun") instance=ExtResource("2_yqjtg")]
+_sun = NodePath("../Sun")

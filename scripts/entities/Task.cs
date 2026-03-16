@@ -58,6 +58,14 @@ public class Task
 	}
 
 	/// <summary>
+	/// Percentage of work that has been performed
+	/// </summary>
+	public double Percentage
+	{
+		get => Progress / Time * 100.0;
+	}
+
+	/// <summary>
 	/// Priority of the task
 	/// </summary>
 	public int Priority { get; set; } = 0;
@@ -177,40 +185,49 @@ public class Task
 	/// <summary>
 	/// Complete the task
 	/// </summary>
-	public void Complete()
+	/// <returns>Returns whether the task was succesfully completed</returns>
+	public bool Complete()
 	{
-		// Call the callback function
 		if (_callbackMethod != null && Executor != null) _callbackMethod(Executor);
-
-		// Abandon the task
-		Abandon();
-
-        // Remove the task from the task manager if it has one
-        _manager?.RemoveTask(this);
-    }
+		return Remove();
+	}
 
 
 	/// <summary>
-	/// Abandon the current task by stopping work on it by the currently assigned entity
+	/// Remove the task
 	/// </summary>
-	public bool Abandon()
+	/// <returns>Returns whether the task was succesfully removed</returns>
+	public bool Remove()
 	{
-		if (Executor == null) return false;
-		Executor.Task = null;
+		if (!Unassign()) return false;
+        _manager?.RemoveTask(this);
+
+        return true;
+	}
+
+
+	/// <summary>
+	/// Unassign the task from the current executor
+	/// </summary>
+	/// <returns>Returns whether the task was succesfully unassigned</returns>
+	public bool Unassign()
+	{
+        if (Executor == null) return false;
+        Executor.Task = null;
 
         // If the task is a building related task, remove the manned flag
         if (Building != null) Building.IsManned = false;
 
-        return true;
-	}
+		return true;
+    }
 }
 
 
 public enum Tasks
 {
 	Rest,
-	DigGround,
-	PlaceGround,
+	Dig,
+	Raise,
 	Man,
 	Store,
 }
