@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://p1xp5yiqakco"]
 
 [ext_resource type="Script" uid="uid://co7o7ivpnkf8n" path="res://scripts/World.cs" id="1_nnsk1"]
+[ext_resource type="PackedScene" uid="uid://cyblxtx3e35mi" path="res://scenes/entities/ship.tscn" id="2_rwgxs"]
 
 [node name="World" type="Node3D" unique_id=380649830]
 script = ExtResource("1_nnsk1")
@@ -8,5 +9,9 @@ script = ExtResource("1_nnsk1")
 [node name="Tiles" type="Node3D" parent="." unique_id=1485613702]
 
 [node name="Entities" type="Node3D" parent="." unique_id=1655417117]
+
+[node name="Ship" parent="Entities" unique_id=2070765950 node_paths=PackedStringArray("_world") instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+_world = NodePath("../..")
 
 [node name="Buildings" type="Node3D" parent="." unique_id=1388098181]

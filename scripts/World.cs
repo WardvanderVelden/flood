@@ -13,8 +13,9 @@ public partial class World : Node3D
 
 	public Tile SelectedTile { get; set; }
 	public Building SelectedBuilding { get; set; }
+	public Navigation Navigation { get; set; }
 
-	private Tile[,] _tiles;
+	public Tile[,] Tiles;
 	private List<Building> _buildings = new List<Building>();
 	private List<Node3D> _entities = new List<Node3D>();
 
@@ -50,6 +51,7 @@ public partial class World : Node3D
 
 		InstantiateTiles();
 		GenerateSimpleWorld();
+		Navigation = new Navigation(this);
 
 		_hasTiles = true;
 	}
@@ -59,7 +61,7 @@ public partial class World : Node3D
 	{
 		PackedScene tileScene = GD.Load<PackedScene>("res://scenes/tile.tscn");
 
-		_tiles = new Tile[Size, Size];
+		Tiles = new Tile[Size, Size];
 		for (int y = 0; y < Size; y++)
 		{
 			for (int x = 0; x < Size; x++)
@@ -71,7 +73,7 @@ public partial class World : Node3D
 
 				_tilesNode.AddChild(tile);
 				//tile.Owner = GetTree().EditedSceneRoot;
-				_tiles[x, y] = tile;
+				Tiles[x, y] = tile;
 			}
 		}
 
@@ -80,11 +82,11 @@ public partial class World : Node3D
 		{
 			for (int x = 0; x < Size; x++)
 			{
-				Tile tile = _tiles[x, y];
-				tile.AddNeighbor((x > 0) ? _tiles[x - 1, y] : null);
-				tile.AddNeighbor((x < Size - 1) ? _tiles[x + 1, y] : null);
-				tile.AddNeighbor((y > 0) ? _tiles[x, y - 1] : null);
-				tile.AddNeighbor((y < Size - 1) ? _tiles[x, y + 1] : null);
+				Tile tile = Tiles[x, y];
+				tile.AddNeighbor((x > 0) ? Tiles[x - 1, y] : null);
+				tile.AddNeighbor((x < Size - 1) ? Tiles[x + 1, y] : null);
+				tile.AddNeighbor((y > 0) ? Tiles[x, y - 1] : null);
+				tile.AddNeighbor((y < Size - 1) ? Tiles[x, y + 1] : null);
 			}
 		}
 	}
@@ -96,7 +98,7 @@ public partial class World : Node3D
 		double angle = 0.0;
 		double angleStep = 5.0;
 
-		Tile centerTile = _tiles[Size / 2, Size / 2];
+		Tile centerTile = Tiles[Size / 2, Size / 2];
 		centerTile.GroundLevel = 0.5f;
 		
 		while (angle < 360.0)
@@ -104,7 +106,7 @@ public partial class World : Node3D
 			int x = Size / 2 + (int)(Math.Cos(angle) * radius);
 			int y = Size / 2 + (int)(Math.Sin(angle) * radius);
 
-			Tile tile = _tiles[x, y];
+			Tile tile = Tiles[x, y];
 			tile.GroundLevel = 2.0f;
 
 			angle += angleStep;
@@ -116,11 +118,16 @@ public partial class World : Node3D
 
 	public Tile GetTileAt(Vector3 position)
 	{
-		int x = (int)position.X;
-		int y = (int)position.Z;
+		int x = (int)Math.Round(position.X);
+		int y = (int)Math.Round(position.Z);
 
 		if (x < 0 || y < 0 || x >= Size || y >= Size) return null;
-		return _tiles[x, y];
+		return Tiles[x, y];
+	}
+
+	public Tile GetTileAt(Vector2 position)
+	{
+		return GetTileAt(new Vector3(position.X, 0.0f, position.Y));
 	}
 
 
@@ -148,6 +155,8 @@ public partial class World : Node3D
 		}
 
 		ProcessWater(deltaTime);
+
+		Navigation.GenerateWaterGrid();
 	}
 
 
@@ -156,11 +165,11 @@ public partial class World : Node3D
 		// Set the water level in a tile to a value to simulate a wave
 		_waveTimer += deltaTime;
 		//_tiles[0, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
-		for (int x = 0; x < Size; x++) _tiles[x, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.3f;
+		for (int x = 0; x < Size; x++) Tiles[x, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.3f;
 
 		// Compute the water flows and update the water levels for each tile
-		foreach (Tile tile in _tiles) tile.ComputeWaterFlows();
-		foreach (Tile tile in _tiles) tile.UpdateWaterLevel(deltaTime);
+		foreach (Tile tile in Tiles) tile.ComputeWaterFlows();
+		foreach (Tile tile in Tiles) tile.UpdateWaterLevel(deltaTime);
 	}
 
 
