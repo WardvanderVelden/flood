@@ -13,6 +13,8 @@ script = ExtResource("1_nnsk1")
 
 [node name="Ship" parent="Entities" unique_id=2070765950 node_paths=PackedStringArray("_world") instance=ExtResource("2_rwgxs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+_world = NodePath("../..")
+
 [node name="Villager" parent="Entities" unique_id=1515782382 node_paths=PackedStringArray("_world") instance=ExtResource("3_k0juu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.766975, 2.095151, 13.869997)
 _world = NodePath("../..")
