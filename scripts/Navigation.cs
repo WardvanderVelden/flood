@@ -22,12 +22,12 @@ public class Navigation
 	{
 		int id = 0;
 
-		foreach (Tile tile in _world.Tiles)
+		foreach (Tile tile in _world._tiles)
 		{
 			Vector2 pos = new Vector2(tile.TilePosition.X, tile.TilePosition.Y);
 			_astarGeneral.AddPoint(id, pos);
 
-			if (tile.TilePosition.X > 0) _astarGeneral.ConnectPoints(id, id - World.Size);
+			if (tile.TilePosition.X > 0) _astarGeneral.ConnectPoints(id, id - _world.Size);
 
 			if (tile.TilePosition.Y > 0) _astarGeneral.ConnectPoints(id, id - 1);
 			id++;
@@ -37,12 +37,12 @@ public class Navigation
 	public void GenerateWaterGrid()
 	{
 		AstarWater = _astarGeneral;
-		for (int y = 0; y < World.Size; y++)
+		for (int y = 0; y < _world.Size; y++)
 		{
-			for (int x = 0; x < World.Size; x++)
+			for (int x = 0; x < _world.Size; x++)
 			{
-				Tile tile = _world.Tiles[x, y];
-				int id = y * World.Size + x;
+				Tile tile = _world._tiles[x, y];
+				int id = y * _world.Size + x;
 				if (!tile.HasWater) AstarWater.SetPointDisabled(id, false);
 			}
 		}
