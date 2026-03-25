@@ -57,7 +57,9 @@ public partial class Controller : Node3D
 
 	private Interactions _interaction = Interactions.None;
 	private float _interactionAngle = 0.0f;
+
 	private Node3D _hoveredNode;
+	private Tile _previousManipulatedTile;
 
 	#endregion
 
@@ -79,6 +81,10 @@ public partial class Controller : Node3D
 	public override void _Process(double deltaTime)
 	{
 		if (Engine.IsEditorHint()) return;
+
+		double hours = Math.Round(_world.Time / 3600.0, 1);
+		GetNode<Label>("UserInterface/WorldStateLabels/TimeValue").Text = hours.ToString();
+		GetNode<Label>("UserInterface/WorldStateLabels/WindValue").Text = _world.Wind.ToString();
 
 		ControlCamera(deltaTime);
 		PositionCamera();
@@ -141,7 +147,11 @@ public partial class Controller : Node3D
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		UpdateHoveredNode();
+
+		bool hasGroundManipulationInteraction = _interaction == Interactions.RaiseGround || _interaction == Interactions.LowerGround;
 		if (Input.IsActionJustReleased("controller_interact")) Interact();
+		if (hasGroundManipulationInteraction && Input.IsActionPressed("controller_interact")) Interact();
+		if (hasGroundManipulationInteraction && Input.IsActionJustReleased("controller_interact")) _previousManipulatedTile = null;
 		if (Input.IsActionJustPressed("controller_rotate_interaction"))
 		{
 			_interactionAngle += (float)Math.PI / 2;
@@ -196,8 +206,8 @@ public partial class Controller : Node3D
 
 		switch (_interaction)
 		{
-			case Interactions.RaiseGround: ManipulateGround(0.5f); break;
-			case Interactions.LowerGround: ManipulateGround(-0.5f); break;
+			case Interactions.RaiseGround: ManipulateGround(true); break;
+			case Interactions.LowerGround: ManipulateGround(); break;
 			case Interactions.PlaceWindPump:
 				PlaceBuilding("wind_pump");
 				SetInteraction();
@@ -228,17 +238,19 @@ public partial class Controller : Node3D
 
 
 	/// <summary>
-	/// Manipulate the ground at the hovered tile by a certain delta level
+	/// Adds tasks for manipulating the ground to the world task manager
 	/// </summary>
-	/// <returns>Returns whether the manipulation has succesfully been executed</returns>
-	public bool ManipulateGround(float amount)
+	/// <returns>Returns whether the tasks were created</returns>
+	public bool ManipulateGround(bool raiseGround = false)
 	{
 		if (_hoveredNode == null || _hoveredNode is not Tile tile) return false;
-
 		if (tile.IsOccupied) return false;
-		tile.GroundLevel += amount;
+		if (tile == _previousManipulatedTile) return false;
 
-		tile.HasGrass = false;
+		if (raiseGround) tile.RaiseGround(_world.TaskManager);
+		else tile.LowerGround(_world.TaskManager);
+
+		_previousManipulatedTile = tile;
 
 		return true;
 	}

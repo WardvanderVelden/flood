@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bnrynhq1kqmuw"]
 
-[ext_resource type="Script" uid="uid://cv32qogasgeya" path="res://scripts/WindPump.cs" id="1_wdi5i"]
+[ext_resource type="Script" uid="uid://badogl3330sjh" path="res://scripts/buildings/WindPump.cs" id="1_wdi5i"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_wdi5i"]
 top_radius = 0.3
@@ -21,9 +21,8 @@ size = Vector3(1, 0.25, 0.05)
 [sub_resource type="BoxShape3D" id="BoxShape3D_wdi5i"]
 size = Vector3(1, 2.5, 1)
 
-[node name="WindPump" type="Node3D" unique_id=609799681 node_paths=PackedStringArray("selectionArea")]
+[node name="WindPump" type="Node3D" unique_id=609799681]
 script = ExtResource("1_wdi5i")
-selectionArea = NodePath("SelectionArea")
 
 [node name="BuildingMesh" type="MeshInstance3D" parent="." unique_id=1299199517]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

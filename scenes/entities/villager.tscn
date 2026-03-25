@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://3lhy6pqq0ebm"]
+
+[ext_resource type="Script" uid="uid://cv17kqkcb5jnw" path="res://scripts/entities/Villager.cs" id="1_j26kl"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_o6ywa"]
+radius = 0.25
+height = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o6ywa"]
+size = Vector3(0.5, 1, 0.5)
+
+[node name="Villager" type="Node3D" unique_id=1515782382]
+script = ExtResource("1_j26kl")
+metadata/_custom_type_script = "uid://dsk1dsylekmhq"
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=1496751056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CapsuleMesh_o6ywa")
+
+[node name="SelectionArea" type="Area3D" parent="." unique_id=1052275047]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="SelectionArea" unique_id=1870300811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_o6ywa")
+
+[node name="StateLabel" type="Label3D" parent="." unique_id=501698238]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+billboard = 1
+text = "Test"

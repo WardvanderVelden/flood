@@ -25,8 +25,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 mesh = SubResource("BoxMesh_vtdo3")
 
 [node name="WaterMesh" type="MeshInstance3D" parent="." unique_id=1651783130]
-transform = Transform3D(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1.4, 0)
 mesh = SubResource("BoxMesh_baj2x")
 
 [node name="GrassMesh" type="MeshInstance3D" parent="." unique_id=1992193447]
@@ -41,3 +40,8 @@ monitorable = false
 
 [node name="SelectionAreaShape" type="CollisionShape3D" parent="SelectionArea" unique_id=580349850]
 shape = SubResource("BoxShape3D_q7utx")
+
+[node name="StateLabel" type="Label3D" parent="." unique_id=1706036759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+billboard = 1
+text = "State"
