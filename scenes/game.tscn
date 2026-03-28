@@ -13,12 +13,29 @@
 environment = SubResource("Environment_dbls1")
 camera_attributes = SubResource("CameraAttributesPractical_yqjtg")
 
-[node name="Controller" parent="." unique_id=842932229 node_paths=PackedStringArray("_world") instance=ExtResource("1_yqjtg")]
+[node name="Controller" parent="." unique_id=842932229 node_paths=PackedStringArray("_camera", "_rayCast", "_selectionMesh", "_world", "_interactionButtons") instance=ExtResource("1_yqjtg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1, 16)
+CameraPitch = 40.0
+FocusAngle = 0.7853982
 _cameraPitch = 40.0
 _cameraDistance = 12.0
 _cameraPanSpeed = 15.0
+_cameraNormal = Vector3(0.5416752, -0.64278764, -0.5416752)
+_cameraOrthogonal = Vector3(-0.5416752, 0, -0.5416752)
+_cameraUp = Vector3(0.34818214, 0.58682406, -0.34818214)
+_focusAngle = 0.7853982
+_focusPosition = Vector2(0, 0)
+_focusUp = Vector2(0.70710677, -0.70710677)
+_focusLeft = Vector2(-0.70710677, -0.70710677)
+_camera = NodePath("Camera")
+_rayCast = NodePath("Camera/RayCast")
+_selectionMesh = NodePath("SelectionMesh")
 _world = NodePath("../World")
+_interactionButtons = NodePath("UserInterface/InteractionButtons")
+_interaction = 0
+_interactionAngle = 0.0
+_hoveredNode = null
+_previousManipulatedTile = null
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=987845817]
 transform = Transform3D(0.8660253, -0.08682408, 0.49240386, 0, 0.98480767, 0.17364818, -0.49999997, -0.15038371, 0.8528685, 0, 0, 0)
@@ -31,5 +48,15 @@ shadow_blur = 2.867
 directional_shadow_split_1 = 0.01
 directional_shadow_blend_splits = true
 
-[node name="World" parent="." unique_id=380649830 node_paths=PackedStringArray("_sun") instance=ExtResource("2_yqjtg")]
+[node name="World" parent="." unique_id=380649830 node_paths=PackedStringArray("_tilesNode", "_buildingsNode", "_entitiesNode", "_sun") instance=ExtResource("2_yqjtg")]
+Size = 32
+Time = 39600.0
+Wind = 0.0
+WindAngle = 0.0
+_waveTimer = 0.0
+_wavePeriod = 5.0
+_hasTiles = true
+_tilesNode = NodePath("Tiles")
+_buildingsNode = NodePath("Buildings")
+_entitiesNode = NodePath("Entities")
 _sun = NodePath("../Sun")

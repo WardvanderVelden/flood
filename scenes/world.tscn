@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://p1xp5yiqakco"]
 
 [ext_resource type="Script" uid="uid://co7o7ivpnkf8n" path="res://scripts/World.cs" id="1_nnsk1"]
-[ext_resource type="PackedScene" uid="uid://cyblxtx3e35mi" path="res://scenes/entities/ship.tscn" id="2_rwgxs"]
+[ext_resource type="PackedScene" uid="uid://cvi7t2gbmsuvq" path="res://scenes/entities/ship.tscn" id="2_rwgxs"]
 [ext_resource type="PackedScene" uid="uid://3lhy6pqq0ebm" path="res://scenes/entities/villager.tscn" id="3_k0juu"]
+
 
 [node name="World" type="Node3D" unique_id=380649830]
 script = ExtResource("1_nnsk1")

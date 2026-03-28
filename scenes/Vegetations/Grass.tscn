@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bnbyfiuww78cm"]
+
+[ext_resource type="Script" uid="uid://chiidg3fiqlae" path="res://scripts/Vegetations/Grass.cs" id="1_m73fx"]
+[ext_resource type="Material" uid="uid://jvaaxcjf0uya" path="res://materials/grass.tres" id="2_at78p"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_i3tkq"]
+material = ExtResource("2_at78p")
+size = Vector3(1, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_at78p"]
+material = ExtResource("2_at78p")
+size = Vector3(1, 0.05, 1)
+
+[node name="Grass" type="Node3D" unique_id=691151696]
+script = ExtResource("1_m73fx")
+GrowTimeAverage = 800.0
+GrowTimeSpread = 200.0
+DrownTime = 450.0
+SpreadChance = 50.0
+metadata/_custom_type_script = "uid://chiidg3fiqlae"
+
+[node name="GrownMesh" type="MeshInstance3D" parent="." unique_id=707676318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("BoxMesh_i3tkq")
+
+[node name="GrowingMesh" type="MeshInstance3D" parent="." unique_id=1847516272]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+visible = false
+mesh = SubResource("BoxMesh_at78p")
