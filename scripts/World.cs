@@ -202,6 +202,8 @@ public partial class World : Node3D
 
         double dayAngle = (Time - (4.0 * 3600.0)) / (16.0 * 3600.0) * Math.PI;
         _sun.Rotation = new Vector3((float)-dayAngle, 52.0f / 180.0f * (float)Math.PI, 0.0f);
+
+        if (Time > 20 * 3600) Time = 8 * 3600;
     }
 
 
