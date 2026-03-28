@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://cyblxtx3e35mi"]
+
+[ext_resource type="Script" path="res://scripts/Ship.cs" id="1_jjvwm"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bfe7u"]
+size = Vector3(0.8, 0.3, 0.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jjvwm"]
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pglq8"]
+material = SubResource("StandardMaterial3D_jjvwm")
+size = Vector3(0.8, 0.3, 0.6)
+
+[node name="CharacterBody3D" type="CharacterBody3D" unique_id=2070765950]
+script = ExtResource("1_jjvwm")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=628585419]
+shape = SubResource("BoxShape3D_bfe7u")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=866515476]
+path_height_offset = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=261907634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+mesh = SubResource("BoxMesh_pglq8")
+skeleton = NodePath("../..")
