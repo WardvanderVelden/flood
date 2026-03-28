@@ -1,12 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Godot;
+
+
+namespace Flood.Tasks;
 
 public class TaskManager
 {
-	private List<Task> _tasks;
+    #region Properties and fields
+
+    private List<Task> _tasks;
 
 	/// <summary>
 	/// Tasks that are tracked by the task manager
@@ -15,7 +18,13 @@ public class TaskManager
 
 	private readonly World _world;
 
+	#endregion
 
+
+	/// <summary>
+	/// Instantiate a task manager
+	/// </summary>
+	/// <param name="world"></param>
 	public TaskManager(World world)
 	{
 		_tasks = new List<Task>();

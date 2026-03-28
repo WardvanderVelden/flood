@@ -1,5 +1,7 @@
+using Flood.Tasks;
 using Godot;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 [Tool]
@@ -13,6 +15,9 @@ public partial class Tile : Node3D
     public Vector2I TilePosition { get; private set; }
 
     private TileOccupant _occupant;
+    /// <summary>
+    /// Occupant of the tile if any
+    /// </summary>
     public TileOccupant Occupant
     {
         get { return _occupant; }
@@ -24,8 +29,19 @@ public partial class Tile : Node3D
         }
     }
 
+    /// <summary>
+    /// Whether the tile is occupied by an occupant
+    /// </summary>
+    public bool IsOccupied => _occupant != null;
+
+    /// <summary>
+    /// Whether the tile is mouse overed
+    /// </summary>
     public bool IsMouseOvered { get; set; }
 
+    /// <summary>
+    /// Whether the tile is selected
+    /// </summary>
     public bool IsSelected { get; set; }
 
     private float _groundLevel = 1.0f;
@@ -94,13 +110,14 @@ public partial class Tile : Node3D
     /// </summary>
     public bool IsWadable => _waterLevel <= 0.25f;
 
-
-    /// <summary>
-    /// Whether the tile is occupied with something
-    /// </summary>
-    public bool IsOccupied { get; set; } = false;
-
     private List<TileNeighbor> _neighbors;
+    /// <summary>
+    /// Read only collection of the neighboring tiles
+    /// </summary>
+    public ReadOnlyCollection<TileNeighbor> Neighbors => _neighbors.AsReadOnly();
+
+    private float _groundTaskManipulationAmount = 0.5f;
+
     private List<Task> _tasks;
 
     private MeshInstance3D _groundMesh;
@@ -111,8 +128,6 @@ public partial class Tile : Node3D
     private Label3D _stateLabel;
 
     private bool _hasAllMeshes = false;
-
-    private float _groundTaskManipulationAmount = 0.5f;
 
     #endregion
 
@@ -316,10 +331,16 @@ public class TileNeighbor
 /// <summary>
 /// Represents an occupant of a tile. A tile can only ever be occupied by one tile occupant. A tile occupant may be vegetation, or the foundation of a building. Such things.
 /// </summary>
-public class TileOccupant
+public partial class TileOccupant : Node3D
 {
     /// <summary>
     /// Tile that the occupant is occupying
     /// </summary>
-    public Tile Tile { get; set; }
+    public Tile Tile { get; set; } = null;
+
+
+    public TileOccupant()
+    {
+
+    }
 }
