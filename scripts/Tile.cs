@@ -12,6 +12,18 @@ public partial class Tile : Node3D
     /// </summary>
     public Vector2I TilePosition { get; private set; }
 
+    private TileOccupant _occupant;
+    public TileOccupant Occupant
+    {
+        get { return _occupant; }
+        set
+        {
+            if (Occupant != null) Occupant.Tile = null;
+            _occupant = value;
+            value.Tile = this;
+        }
+    }
+
     public bool IsMouseOvered { get; set; }
 
     public bool IsSelected { get; set; }
@@ -82,25 +94,6 @@ public partial class Tile : Node3D
     /// </summary>
     public bool IsWadable => _waterLevel <= 0.25f;
 
-    private bool _hasGrass = true;
-    /// <summary>
-    /// Whether the tile has grass on it
-    /// </summary>
-    public bool HasGrass
-    {
-        get => _hasGrass;
-        set
-        {
-            if (!value && _hasGrass && _grassMesh != null)
-            {
-                _grassTimer = 0.0;
-                _grassMesh.Visible = false;
-            }
-            if (value && !_hasGrass && _grassMesh != null) _grassMesh.Visible = true;
-
-            _hasGrass = value;
-        }
-    }
 
     /// <summary>
     /// Whether the tile is occupied with something
@@ -113,15 +106,13 @@ public partial class Tile : Node3D
     private MeshInstance3D _groundMesh;
     private MeshInstance3D _waterMesh;
 
-    private MeshInstance3D _grassMesh;
-    private double _grassTimer;
-    private const double _grassGrowTime = 15.0;
-
     private Area3D _selectionArea;
 
     private Label3D _stateLabel;
 
     private bool _hasAllMeshes = false;
+
+    private float _groundTaskManipulationAmount = 0.5f;
 
     #endregion
 
@@ -135,7 +126,6 @@ public partial class Tile : Node3D
 
         _groundMesh = GetNode<MeshInstance3D>("GroundMesh");
         _waterMesh = GetNode<MeshInstance3D>("WaterMesh");
-        _grassMesh = GetNode<MeshInstance3D>("GrassMesh");
 
         _selectionArea = GetNode<Area3D>("SelectionArea");
 
@@ -156,19 +146,6 @@ public partial class Tile : Node3D
 
         _neighbors.Add(new TileNeighbor(tile));
         return true;
-    }
-
-
-    public override void _Process(double deltaTime)
-    {
-        // Handle the grass growing logic
-        if (HasWater && HasGrass) HasGrass = false;
-
-        if (!HasWater && !HasGrass)
-        {
-            _grassTimer += deltaTime;
-            HasGrass = (_grassTimer > _grassGrowTime);
-        }
     }
 
 
@@ -236,12 +213,11 @@ public partial class Tile : Node3D
 
     private void OnChangeGroundLevel()
     {
-        if (_groundMesh == null || _grassMesh == null || _selectionArea == null) return;
+        if (_groundMesh == null || _selectionArea == null) return;
 
         _groundMesh.Scale = new Vector3(1.0f, _groundLevel, 1.0f);
         _groundMesh.Position = new Vector3(0.0f, 0.5f * _groundLevel, 0.0f);
 
-        _grassMesh.Position = new Vector3(0.0f, _groundLevel + 0.05f, 0.0f);
         _selectionArea.Position = new Vector3(0.0f, _groundLevel, 0.0f);
 
         _stateLabel.Position = new Vector3(0.0f, Top, 0.0f);
@@ -279,7 +255,7 @@ public partial class Tile : Node3D
         // Add a raise task to the tile and the manager
         Task task = Task.CreateTileTask(this, Tasks.Raise, 0.25, 0, (Entity entity) =>
         {
-            GroundLevel += 0.5f;
+            GroundLevel += _groundTaskManipulationAmount;
             entity.Good = Goods.Nothing;
         });
         _tasks.Add(task);
@@ -303,10 +279,14 @@ public partial class Tile : Node3D
             return;
         }
 
+        // Prevent a dig task from being added if it would cause the ground level to become less than zero
+        int lowerTaskCount = _tasks.Where(t => t.Type == Tasks.Dig).Count();
+        if (GroundLevel - lowerTaskCount * _groundTaskManipulationAmount <= 1.0) return;
+
         // Add a dig task to the tile and the manager
         Task task = Task.CreateTileTask(this, Tasks.Dig, 0.25, 0, (Entity entity) =>
         {
-            GroundLevel -= 0.5f;
+            GroundLevel -= _groundTaskManipulationAmount;
             entity.Good = Goods.Ground;
         });
         _tasks.Add(task);
@@ -330,4 +310,16 @@ public class TileNeighbor
         Tile = tile;
         Flow = 0;
     }
+}
+
+
+/// <summary>
+/// Represents an occupant of a tile. A tile can only ever be occupied by one tile occupant. A tile occupant may be vegetation, or the foundation of a building. Such things.
+/// </summary>
+public class TileOccupant
+{
+    /// <summary>
+    /// Tile that the occupant is occupying
+    /// </summary>
+    public Tile Tile { get; set; }
 }

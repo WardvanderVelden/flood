@@ -3,16 +3,12 @@
 [ext_resource type="Script" uid="uid://b8m55l7xqu2d5" path="res://scripts/Tile.cs" id="1_6p3j2"]
 [ext_resource type="Material" uid="uid://d3vwcaacdinbl" path="res://materials/ground.tres" id="2_gtpg2"]
 [ext_resource type="Material" uid="uid://cktqirb6p41yf" path="res://materials/water.tres" id="3_a2bny"]
-[ext_resource type="Material" uid="uid://jvaaxcjf0uya" path="res://materials/grass.tres" id="4_284l3"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_vtdo3"]
 material = ExtResource("2_gtpg2")
 
 [sub_resource type="BoxMesh" id="BoxMesh_baj2x"]
 material = ExtResource("3_a2bny")
-
-[sub_resource type="BoxMesh" id="BoxMesh_doujx"]
-size = Vector3(1, 0.1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_q7utx"]
 size = Vector3(1, 0.1, 1)
@@ -27,11 +23,6 @@ mesh = SubResource("BoxMesh_vtdo3")
 [node name="WaterMesh" type="MeshInstance3D" parent="." unique_id=1651783130]
 transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1.4, 0)
 mesh = SubResource("BoxMesh_baj2x")
-
-[node name="GrassMesh" type="MeshInstance3D" parent="." unique_id=1992193447]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
-material_override = ExtResource("4_284l3")
-mesh = SubResource("BoxMesh_doujx")
 
 [node name="SelectionArea" type="Area3D" parent="." unique_id=1564652319]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
