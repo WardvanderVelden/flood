@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://3lhy6pqq0ebm"]
 
-[ext_resource type="Script" uid="uid://cv17kqkcb5jnw" path="res://scripts/entities/Villager.cs" id="1_j26kl"]
+[ext_resource type="Script" uid="uid://f756b7wiceud" path="res://scripts/Entities/Villager.cs" id="1_j26kl"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_o6ywa"]
 radius = 0.25
@@ -11,7 +11,6 @@ size = Vector3(0.5, 1, 0.5)
 
 [node name="Villager" type="Node3D" unique_id=1515782382]
 script = ExtResource("1_j26kl")
-metadata/_custom_type_script = "uid://dsk1dsylekmhq"
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=1496751056]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
