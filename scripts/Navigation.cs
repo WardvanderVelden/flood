@@ -14,7 +14,7 @@ public class Navigation
 	{
 		_world = world;
 		GenerateGrid();
-		GenerateWaterGrid();
+		GenerateWaterLandGrids();
 	}
 
 
@@ -34,16 +34,18 @@ public class Navigation
 		} 
 	}
 
-	public void GenerateWaterGrid()
+	public void GenerateWaterLandGrids()
 	{
 		AstarWater = _astarGeneral;
+		AstarLand = _astarGeneral;
 		for (int y = 0; y < _world.Size; y++)
 		{
 			for (int x = 0; x < _world.Size; x++)
 			{
 				Tile tile = _world._tiles[x, y];
 				int id = y * _world.Size + x;
-				if (!tile.HasWater) AstarWater.SetPointDisabled(id, false);
+				if (!tile.IsWadable) AstarWater.SetPointDisabled(id, false);
+				else AstarLand.SetPointDisabled(id, false);
 			}
 		}
 	}

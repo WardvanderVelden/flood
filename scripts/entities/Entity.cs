@@ -5,7 +5,7 @@ using Godot;
 /// Represents an entity in the game that is subject to pathfinding and can perform jobs
 /// </summary>
 [GlobalClass]
-public partial class Entity : Node3D
+public partial class Entity : CharacterBody3D
 {
 	#region Properties and fields
 
@@ -49,14 +49,20 @@ public partial class Entity : Node3D
 	protected double restTime = 2.0;
 	protected Vector3 restPosition;
 
+	protected NavigationAgent agent;
+	MovementTypes MovementType;
+
 	[Export]
-	private World _world;
+	protected World _world;
 
 	#endregion
 
 	public override void _Ready()
 	{
 		restPosition = Position;
+
+		var godotAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
+		agent = new NavigationAgent(godotAgent, _world, MovementSpeed, MovementType);
 	}
 
 

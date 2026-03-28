@@ -6,6 +6,7 @@ using Godot;
 public partial class Villager : Entity
 {
 	private Label3D _stateLabel;
+	MovementTypes MovementType = MovementTypes.LandBased;
 
 	public override void _Ready()
 	{

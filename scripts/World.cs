@@ -189,7 +189,7 @@ public partial class World : Node3D
 
         ProcessTime(deltaTime);
         ProcessWater(deltaTime);
-        Navigation.GenerateWaterGrid();
+        Navigation.GenerateWaterLandGrids();
     }
 
 
