@@ -9,14 +9,32 @@ public partial class World : Node3D
 {
 	#region Properties and fields
 
-	public const int Size = 32;
+	/// <summary>
+	/// Tile count along either side of the world
+	/// </summary>
+	public int Size { get; private set; } = 32;
 
-	public Tile SelectedTile { get; set; }
-	public Building SelectedBuilding { get; set; }
+	/// <summary>
+	/// Time in the world [s]
+	/// </summary>
+	public double Time { get; private set; } = 3600.0 * 8.0;
 
-	private Tile[,] _tiles;
+	/// <summary>
+	/// Strength of the wind [m/s] (This will have a relation to the water height)
+	/// </summary>
+	public double Wind { get; private set; }
+
+	/// <summary>
+	/// Directional angle of the wind [rad]
+	/// </summary>
+	public float WindAngle { get; private set; }
+
+	public TaskManager TaskManager { get; private set; }
+
+	public Tile[,] _tiles;
 	private List<Building> _buildings = new List<Building>();
-	private List<Node3D> _entities = new List<Node3D>();
+	private List<Entity> _entities = new List<Entity>();
+	public Navigation Navigation { get; set; }
 
 	private double _waveTimer = 0.0;
 	private double _wavePeriod = 5.0;
@@ -27,6 +45,8 @@ public partial class World : Node3D
 	private Node3D _buildingsNode;
 	private Node3D _entitiesNode;
 
+	[Export]
+	private DirectionalLight3D _sun;
 
 	#endregion
 
@@ -36,6 +56,8 @@ public partial class World : Node3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		TaskManager = new TaskManager(this);
+
 		_tilesNode = GetNode<Node3D>("Tiles");
 		_buildingsNode = GetNode<Node3D>("Buildings");
 		_entitiesNode = GetNode<Node3D>("Entities");
@@ -50,6 +72,7 @@ public partial class World : Node3D
 
 		InstantiateTiles();
 		GenerateSimpleWorld();
+		Navigation = new Navigation(this);
 
 		_hasTiles = true;
 	}
@@ -65,12 +88,9 @@ public partial class World : Node3D
 			for (int x = 0; x < Size; x++)
 			{
 				Tile tile = tileScene.Instantiate<Tile>();
-
-				bool isOnWorldEdge = (x == 0 || y == 0 || x == Size - 1 || y == Size - 1);
-				tile.Initialize(x, y, isOnWorldEdge);
+				tile.Initialize(x, y);
 
 				_tilesNode.AddChild(tile);
-				//tile.Owner = GetTree().EditedSceneRoot;
 				_tiles[x, y] = tile;
 			}
 		}
@@ -92,37 +112,34 @@ public partial class World : Node3D
 
 	private void GenerateSimpleWorld()
 	{
-		double radius = 5;
-		double angle = 0.0;
-		double angleStep = 5.0;
+		Vector2I center = new Vector2I(Size / 2, Size / 2);
+		double radius = 5.0;
 
-		Tile centerTile = _tiles[Size / 2, Size / 2];
-		centerTile.GroundLevel = 0.5f;
-		
-		while (angle < 360.0)
+		for (int y = 0; y < Size; y++)
 		{
-			int x = Size / 2 + (int)(Math.Cos(angle) * radius);
-			int y = Size / 2 + (int)(Math.Sin(angle) * radius);
-
-			Tile tile = _tiles[x, y];
-			tile.GroundLevel = 2.0f;
-
-			angle += angleStep;
+			for (int x = 0; x < Size; x++)
+			{
+				Vector2I position = new Vector2I(x, y);
+				if (center.DistanceTo(position) < radius)
+				{
+					Tile tile = _tiles[x, y];
+					tile.GroundLevel = 2.0f;
+					tile.WaterLevel = 0.0f;
+				}
+			}
 		}
 	}
 
 	#endregion
 
 
-	public Tile GetTileAt(Vector3 position)
+	public Tile GetTileAt(int x, int y)
 	{
-		int x = (int)position.X;
-		int y = (int)position.Z;
-
 		if (x < 0 || y < 0 || x >= Size || y >= Size) return null;
 		return _tiles[x, y];
 	}
-
+	public Tile GetTileAt(Vector2 position) => GetTileAt((int)position.X, (int)position.Y);
+	public Tile GetTileAt(Vector3 position) => GetTileAt((int)position.X, (int)position.Z);
 
 	public void AddBuilding(Building building)
 	{
@@ -135,7 +152,6 @@ public partial class World : Node3D
 	{
 		_buildings.Remove(building);
 		_buildingsNode.RemoveChild(building);
-		if (SelectedBuilding == building) SelectedBuilding = null;
 	}
 
 
@@ -147,56 +163,40 @@ public partial class World : Node3D
 			return;
 		}
 
+		
+		ProcessTime(deltaTime);
 		ProcessWater(deltaTime);
+		Navigation.GenerateWaterGrid();
 	}
 
 
+	private void ProcessTime(double deltaTime)
+	{
+		Time = (Time + deltaTime * 288.0) % (3600.0 * 24.0);
+
+		double dayAngle = (Time - (4.0 * 3600.0)) / (16.0 * 3600.0) * Math.PI;
+		_sun.Rotation = new Vector3((float)-dayAngle, 52.0f / 180.0f * (float)Math.PI, 0.0f);
+	}
+
+
+	/// <summary>
+	/// Process the water in the world
+	/// </summary>
 	private void ProcessWater(double deltaTime)
 	{
-		// Set the water level in a tile to a value to simulate a wave
+		// Set the edge of the tiles to the 
 		_waveTimer += deltaTime;
-		//_tiles[0, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.4f;
-		for (int x = 0; x < Size; x++) _tiles[x, 0].WaterLevel = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.3f;
+		float waveHeight = 0.8f + (float)Math.Sin(_waveTimer / _wavePeriod * 2.0 * Math.PI) * 0.3f;
+		for (int i = 0; i < Size; i++)
+		{
+			_tiles[i, 0].WaterLevel = waveHeight;
+			_tiles[i, Size - 1].WaterLevel = waveHeight;
+			_tiles[0, i].WaterLevel = waveHeight;
+			_tiles[0, Size - 1].WaterLevel = waveHeight;
+		}
 
 		// Compute the water flows and update the water levels for each tile
 		foreach (Tile tile in _tiles) tile.ComputeWaterFlows();
 		foreach (Tile tile in _tiles) tile.UpdateWaterLevel(deltaTime);
-	}
-
-
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		if (Engine.IsEditorHint()) return;
-
-		// Handle the mouse selection
-		if (Input.IsMouseButtonPressed(MouseButton.Left))
-		{
-			foreach (Building building in _buildings)
-			{
-				building.IsSelected = building.IsMouseHovered;
-				if (building.IsSelected) SelectedBuilding = building;
-			}
-		}
-
-		if (SelectedTile != null)
-		{
-			if (Input.IsActionJustReleased("raise_ground")) SelectedTile.GroundLevel += 0.5f;
-			if (Input.IsActionJustReleased("lower_ground")) SelectedTile.GroundLevel -= 0.5f;
-
-			if (Input.IsActionJustReleased("construct_windpump"))
-			{
-				PackedScene windPumpScene = GD.Load<PackedScene>("res://scenes/buildings/wind_pump.tscn");
-				WindPump windPump = windPumpScene.Instantiate<WindPump>();
-
-				windPump.TryToPlace(this, SelectedTile);
-				SelectedBuilding = windPump;
-			}
-		}
-
-		if (SelectedBuilding != null)
-		{
-			if (Input.IsActionJustPressed("remove_building")) SelectedBuilding.Remove();
-			if (Input.IsActionJustPressed("rotate_building")) SelectedBuilding.Rotate();
-		}
 	}
 }

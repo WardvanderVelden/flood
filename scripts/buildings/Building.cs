@@ -1,32 +1,24 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Godot;
 
 
 [GlobalClass]
 public partial class Building : Node3D
 {
+	public bool IsManned { get; set; }
+
 	protected World world;
 	protected Tile tile;
 
-	public bool IsSelected { get; set; }
-	public bool IsMouseHovered { get; private set; }
-
 	[Export]
 	protected Area3D selectionArea;
-
-	public override void _Ready()
-	{
-		selectionArea.MouseEntered += () => IsMouseHovered = true;
-		selectionArea.MouseExited += () => IsMouseHovered = false;
-	}
 
 
 	/// <summary>
 	/// Try to place a building on a tile
 	/// </summary>
-	/// <param name="world"></param>
-	/// <param name="tile"></param>
-	/// <returns></returns>
 	public bool TryToPlace(World world, Tile tile)
 	{
 		if (!CanPlaceOnTile(tile)) return false;
@@ -45,15 +37,26 @@ public partial class Building : Node3D
 	}
 
 
+	/// <summary>
+	/// Checks whether a tile can be used to place the building on
+	/// </summary>
+	/// <param name="tile">Tile to check</param>
+	/// <returns>Returns whether the building can be placed on the tile</returns>
 	protected virtual bool CanPlaceOnTile(Tile tile)
 	{
 		return !tile.IsOccupied;
 	}
 
 
+	/// <summary>
+	/// Initialize the building
+	/// </summary>
 	protected virtual void Initialize() { }
 
 
+	/// <summary>
+	/// Remove the building
+	/// </summary>
 	public virtual void Remove()
 	{
 		tile.IsOccupied = false;
@@ -62,6 +65,9 @@ public partial class Building : Node3D
 	}
 
 
+	/// <summary>
+	/// Rotate the building
+	/// </summary>
 	public virtual void Rotate()
 	{
 		RotateY((float)Math.PI / 2);
