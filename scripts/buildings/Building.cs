@@ -8,7 +8,6 @@ public partial class Building : TileOccupant
 	public bool IsManned { get; set; }
 
 	protected World world;
-	protected Tile tile;
 
 	[Export]
 	protected Area3D selectionArea;
@@ -24,8 +23,6 @@ public partial class Building : TileOccupant
 		world.AddBuilding(this);
 
 		this.world = world;
-		this.tile = tile;
-
 		tile.Occupant = this;
 
 		Position = new Vector3(tile.Position.X, tile.GroundLevel, tile.Position.Z);
@@ -42,7 +39,7 @@ public partial class Building : TileOccupant
 	/// <returns>Returns whether the building can be placed on the tile</returns>
 	protected virtual bool CanPlaceOnTile(Tile tile)
 	{
-		return !tile.IsOccupied;
+		return !tile.IsOccupied || tile.Occupant is Vegetation;
 	}
 
 
@@ -57,7 +54,7 @@ public partial class Building : TileOccupant
 	/// </summary>
 	public virtual void Remove()
 	{
-		tile.Occupant = null;
+		Tile.Occupant = null;
 		world.RemoveBuilding(this);
 		QueueFree();
 	}

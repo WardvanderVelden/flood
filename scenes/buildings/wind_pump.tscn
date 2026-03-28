@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bnrynhq1kqmuw"]
 
-[ext_resource type="Script" uid="uid://badogl3330sjh" path="res://scripts/buildings/WindPump.cs" id="1_wdi5i"]
+[ext_resource type="Script" uid="uid://bydhdy1ct6q6r" path="res://scripts/Buildings/WindPump.cs" id="1_wdi5i"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_wdi5i"]
 top_radius = 0.3
