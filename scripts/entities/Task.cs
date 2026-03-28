@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using static Task;
 
 
 /// <summary>
@@ -89,7 +87,7 @@ public class Task
 	/// Whether the task is being executed
 	/// </summary>
 	public bool IsExecuting => Executor?.Task == this;
-	
+
 	private TaskManager _manager;
 	/// <summary>
 	/// Task manager of the task
@@ -230,6 +228,9 @@ public class Task
 }
 
 
+/// <summary>
+/// Task types
+/// </summary>
 public enum Tasks
 {
 	Rest,
